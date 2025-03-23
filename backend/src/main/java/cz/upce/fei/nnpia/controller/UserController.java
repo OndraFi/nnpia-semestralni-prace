@@ -3,6 +3,7 @@ package cz.upce.fei.nnpia.controller;
 import cz.upce.fei.nnpia.domain.User;
 import cz.upce.fei.nnpia.dto.UserRequestDto;
 import cz.upce.fei.nnpia.dto.UserResponseDto;
+import cz.upce.fei.nnpia.exception.UserNotFoundException;
 import cz.upce.fei.nnpia.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,9 +26,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserResponseDto
+    public ResponseEntity<UserResponseDto>
     findUser(@PathVariable long id) {
-        return userService.findUser(id).toResponseDto();
+        try{
+            return ResponseEntity.ok().body(userService.findUser(id).toResponseDto());
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 //    @GetMapping

@@ -25,6 +25,9 @@ public class User implements UserDetails {
     @NonNull
     private String password;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Restaurant> restaurants;
+
     public UserResponseDto toResponseDto() {
         return UserResponseDto.builder().id(id).email(email).password(password).build();
     }
@@ -57,5 +60,12 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                '}';
     }
 }
