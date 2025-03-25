@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Component
@@ -34,7 +35,9 @@ public class DataInitializer implements CommandLineRunner {
             log.info("Creating user {}", user.getEmail());
             userRepository.save(user);
 
-            Restaurant restaurant = new Restaurant("Admin Restaurant",user);
+            LocalTime openTime = LocalTime.of(8, 0);
+            LocalTime closeTime = LocalTime.of(22, 0);
+            Restaurant restaurant = new Restaurant("Admin Restaurant",50,openTime,closeTime,user);
             if(!restaurantRepository.existsById(restaurant.getId())) {
                 log.info("Creating restaurant {}", restaurant.getId());
                 restaurantRepository.save(restaurant);
@@ -57,7 +60,7 @@ public class DataInitializer implements CommandLineRunner {
 
             LocalDateTime start = LocalDateTime.now();
             LocalDateTime end = start.plusHours(2);
-            Reservation reservation = new Reservation(start,end,"123456789","Admin", restaurant, desk);
+            Reservation reservation = new Reservation(start,end,"123456789","fialka.ondra@gmail.com","Admin", 5,restaurant);
             if(!reservationRepository.existsById(reservation.getId())) {
                 log.info("Creating reservation {}", reservation.getId());
                 reservationRepository.save(reservation);
@@ -65,7 +68,7 @@ public class DataInitializer implements CommandLineRunner {
 
             LocalDateTime start2 = end.plusHours(1);
             LocalDateTime end2 = start2.plusHours(2);
-            Reservation reservation2 = new Reservation(start2,end2,"987654321","Test user", restaurant,desk);
+            Reservation reservation2 = new Reservation(start2,end2,"987654321","fialka.ondra@gmail.com","Test user", 2,restaurant);
 
             if(!reservationRepository.existsById(reservation2.getId())) {
                 log.info("Creating reservation {}", reservation2.getId());

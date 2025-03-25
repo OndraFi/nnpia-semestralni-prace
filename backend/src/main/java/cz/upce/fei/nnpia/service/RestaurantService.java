@@ -7,7 +7,11 @@ import cz.upce.fei.nnpia.exception.OwnershipException;
 import cz.upce.fei.nnpia.exception.RestaurantNotFoundException;
 import cz.upce.fei.nnpia.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -29,6 +33,9 @@ public class RestaurantService {
             throw new OwnershipException("You are not the owner of this restaurant");
         }
         restaurant.setName(restaurantRequestDto.getName());
+        restaurant.setCapacity(restaurantRequestDto.getCapacity());
+        restaurant.setOpenTime(restaurantRequestDto.getOpenTime());
+        restaurant.setCloseTime(restaurantRequestDto.getCloseTime());
         restaurantRepository.save(restaurant);
         return restaurant;
     }
@@ -45,4 +52,24 @@ public class RestaurantService {
         return restaurantRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
     }
 
+    public List<Restaurant> findRestaurantsByUser(User user){
+        return restaurantRepository.findByUser(user);
+    }
+
+    public List<Restaurant> findRestaurantsPaginated(int page, int size, String searchSlug) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (searchSlug != null && !searchSlug.isEmpty()) {
+            return restaurantRepository.findByNameContainingIgnoreCase(searchSlug, pageable);
+        } else {
+            return restaurantRepository.findAll(pageable).getContent();
+        }
+    }
+
+    public long countRestaurants(String searchSlug) {
+        if(searchSlug != null && !searchSlug.isEmpty()) {
+            return restaurantRepository.countByNameContainsIgnoreCase(searchSlug);
+        }else{
+            return restaurantRepository.count();
+        }
+    }
 }

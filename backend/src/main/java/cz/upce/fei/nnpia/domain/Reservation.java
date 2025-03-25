@@ -1,5 +1,6 @@
 package cz.upce.fei.nnpia.domain;
 
+import cz.upce.fei.nnpia.dto.ReservationResponseDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,14 +29,19 @@ public class Reservation {
     private String phone;
 
     @NonNull
+    private String email;
+
+    @NonNull
     private String reservationName;
+
+    @NonNull
+    private long numberOfPeople;
 
     @NonNull
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @NonNull
     @ManyToOne
     @JoinColumn(name = "desk_id")
     private Desk desk;
@@ -46,5 +52,9 @@ public class Reservation {
                 "id=" + id +
                 ", reservationName='" + reservationName + '\'' +
                 '}';
+    }
+
+    public ReservationResponseDto toDto(){
+        return new ReservationResponseDto(id,startTime,endTime,phone,email,reservationName,numberOfPeople);
     }
 }

@@ -1,5 +1,6 @@
 package cz.upce.fei.nnpia.controller;
 
+import cz.upce.fei.nnpia.domain.Restaurant;
 import cz.upce.fei.nnpia.domain.User;
 import cz.upce.fei.nnpia.dto.RestaurantRequestDto;
 import cz.upce.fei.nnpia.dto.RestaurantResponseDto;
@@ -11,6 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -29,8 +34,31 @@ public class RestaurantController {
         return ResponseEntity.ok().body(restaurantService.findRestaurant(id).toResponseDto());
     }
 
+    @GetMapping("/byUser")
+    public ResponseEntity<List<RestaurantResponseDto>> findAllUsersRestaurants() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Restaurant> restaurants = restaurantService.findRestaurantsByUser(user);
+        List<RestaurantResponseDto> restaurantResponseDtos = restaurants.stream()
+                .map(Restaurant::toResponseDto)
+                .toList();
+        return ResponseEntity.ok().body(restaurantResponseDtos);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<Map<String, Object>> findAllRestaurantsPaginated(@RequestParam int page, @RequestParam int size, @RequestParam String searchSlug) {
+        List<Restaurant> restaurants = restaurantService.findRestaurantsPaginated(page, size, searchSlug);
+        List<RestaurantResponseDto> restaurantResponseDtos = restaurants.stream()
+                .map(Restaurant::toResponseDto)
+                .toList();
+        long totalRestaurants = restaurantService.countRestaurants(searchSlug);
+        Map<String, Object> response = new HashMap<>();
+        response.put("restaurants", restaurantResponseDtos);
+        response.put("total", totalRestaurants);
+        return ResponseEntity.ok().body(response);
+    }
+
     @PostMapping
-    public ResponseEntity<RestaurantResponseDto> createRestaurant(@RequestBody RestaurantRequestDto restaurantRequestDto) {
+    public ResponseEntity<RestaurantResponseDto> createRestaurant(@RequestBody @Valid RestaurantRequestDto restaurantRequestDto) {
         log.info("Request for creating restaurant obtained {}", restaurantRequestDto);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("User: {}", user);

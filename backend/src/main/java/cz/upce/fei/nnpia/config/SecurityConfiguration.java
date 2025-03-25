@@ -3,6 +3,7 @@ package cz.upce.fei.nnpia.config;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,7 +36,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/restaurants").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/restaurants/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/restaurants/{id}/reservations/available-times").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/restaurants/{id}/reservations").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
