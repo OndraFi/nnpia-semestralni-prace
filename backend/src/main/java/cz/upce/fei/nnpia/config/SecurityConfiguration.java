@@ -40,7 +40,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,"/api/v1/restaurants").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/restaurants/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/restaurants/{id}/reservations/available-times").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/restaurants/{id}/reservations/{uuid}").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/restaurants/{id}/reservations").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/restaurant-images/{uuid}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -62,7 +64,7 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:5174","http://localhost:5175"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 

@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -18,6 +19,10 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+
+    @Column(unique = true, nullable = false, updatable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @NonNull
     private LocalDateTime startTime; // Čas začátku rezervace
@@ -37,6 +42,8 @@ public class Reservation {
     @NonNull
     private long numberOfPeople;
 
+    private Boolean isAccepted = false;
+
     @NonNull
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
@@ -55,6 +62,6 @@ public class Reservation {
     }
 
     public ReservationResponseDto toDto(){
-        return new ReservationResponseDto(id,startTime,endTime,phone,email,reservationName,numberOfPeople);
+        return new ReservationResponseDto(id,startTime,endTime,phone,email,reservationName,numberOfPeople,isAccepted);
     }
 }

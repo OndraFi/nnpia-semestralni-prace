@@ -3,6 +3,8 @@ package cz.upce.fei.nnpia.dto;
 import lombok.*;
 
 import java.time.LocalTime;
+import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -16,4 +18,5 @@ public class RestaurantResponseDto {
     private LocalTime openTime;
     private LocalTime closeTime;
     private AddressResponseDto address;
+    private List<UUID> imagesIds;
 }

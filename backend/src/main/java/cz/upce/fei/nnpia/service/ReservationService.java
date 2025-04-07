@@ -1,9 +1,13 @@
 package cz.upce.fei.nnpia.service;
 
+import com.mailjet.client.errors.MailjetException;
 import cz.upce.fei.nnpia.domain.Reservation;
 import cz.upce.fei.nnpia.domain.Restaurant;
+import cz.upce.fei.nnpia.domain.User;
 import cz.upce.fei.nnpia.domain.value.TimeRange;
 import cz.upce.fei.nnpia.dto.ReservationRequestDto;
+import cz.upce.fei.nnpia.exception.NotFoundException;
+import cz.upce.fei.nnpia.exception.OwnershipException;
 import cz.upce.fei.nnpia.repository.ReservationRepository;
 import jakarta.validation.constraints.Min;
 import org.springframework.stereotype.Service;
@@ -13,21 +17,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final RestaurantService restaurantService;
+    private final MailJetService mailJetService;
 
-    public ReservationService(ReservationRepository reservationRepository, RestaurantService restaurantService) {
+    public ReservationService(ReservationRepository reservationRepository, RestaurantService restaurantService, MailJetService mailJetService) {
         this.reservationRepository = reservationRepository;
         this.restaurantService = restaurantService;
+        this.mailJetService = mailJetService;
     }
 
-    public Reservation createReservation(long restaurantId, ReservationRequestDto reservationRequestDto){
+    public Reservation createReservation(long restaurantId, ReservationRequestDto reservationRequestDto) throws MailjetException {
         Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
         List<Reservation> reservations = reservationRepository.findByRestaurantAndStartTimeBetween(
                 restaurant, reservationRequestDto.getStartTime().toLocalDate().atStartOfDay(),
@@ -44,7 +50,12 @@ public class ReservationService {
             throw new IllegalArgumentException("Not enough capacity for the reservation.");
         }
 
-        return reservationRepository.save(reservationRequestDto.toReservation(restaurant));
+        Reservation reservation = reservationRequestDto.toReservation(restaurant);
+        reservationRepository.save(reservation);
+
+        mailJetService.sendReservationEmail(reservationRequestDto.getEmail(), restaurant.getId(), reservation.getUuid());
+
+        return reservation;
     }
 
     public List<TimeRange> getAvailableTimeBlocks(long restaurantId, LocalDate date, int numberOfPeople) {
@@ -100,4 +111,40 @@ public class ReservationService {
         return availableRanges;
     }
 
+    public List<Reservation> getReservations(@Min(1) long restaurantId, User user) {
+        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+        if (restaurant.getUser().getId() != user.getId()) {
+            throw new OwnershipException("You are not the owner of this restaurant");
+        }
+        return reservationRepository.findAllByRestaurantId(restaurantId);
+    }
+
+    public Reservation acceptReservation(@Min(1) long restaurantId, Long reservationId, User user) throws MailjetException {
+        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+        if (restaurant.getUser().getId() != user.getId()) {
+            throw new OwnershipException("You are not the owner of this restaurant");
+        }
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException("Reservation not found"));
+
+
+
+        reservation.setIsAccepted(true);
+        reservationRepository.save(reservation);
+
+        mailJetService.sendReservationAcceptedEmail(reservation.getEmail(),restaurant.getId(), reservation.getUuid());
+
+        return reservation;
+    }
+
+    public void deleteReservation(@Min(1) long restaurantId, UUID reservationUuid) throws MailjetException {
+        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+
+        if(!reservationRepository.existsByUuid(reservationUuid)) {
+            throw new NotFoundException("Reservation not found");
+        }
+        Reservation reservation = reservationRepository.findByUuid(reservationUuid);
+        mailJetService.sendReservationCancelEmail(reservation.getEmail());
+        reservationRepository.deleteByUuid(reservationUuid);
+    }
 }

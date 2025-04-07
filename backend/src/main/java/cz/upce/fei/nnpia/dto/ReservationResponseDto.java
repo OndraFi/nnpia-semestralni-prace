@@ -18,4 +18,5 @@ public class ReservationResponseDto {
     private String email;
     private String reservationName;
     private long numberOfPeople;
+    private Boolean isAccepted;
 }

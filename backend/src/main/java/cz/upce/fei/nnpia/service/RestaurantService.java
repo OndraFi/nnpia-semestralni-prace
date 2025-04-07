@@ -3,10 +3,10 @@ package cz.upce.fei.nnpia.service;
 import cz.upce.fei.nnpia.domain.Restaurant;
 import cz.upce.fei.nnpia.domain.User;
 import cz.upce.fei.nnpia.dto.RestaurantRequestDto;
+import cz.upce.fei.nnpia.exception.BadRequestException;
 import cz.upce.fei.nnpia.exception.OwnershipException;
 import cz.upce.fei.nnpia.exception.RestaurantNotFoundException;
 import cz.upce.fei.nnpia.repository.RestaurantRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,9 @@ public class RestaurantService {
     }
 
     public Restaurant createRestaurant(Restaurant restaurant) {
+        if (restaurant.getOpenTime().isAfter(restaurant.getCloseTime())) {
+            throw new BadRequestException("open time has to be lower than close time!");
+        }
         return restaurantRepository.save(restaurant);
     }
 

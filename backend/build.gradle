@@ -36,6 +36,8 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	//mailjet
+	implementation 'com.mailjet:mailjet-client:5.2.6'
 }
 
 tasks.named('test') {

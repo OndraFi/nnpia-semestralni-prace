@@ -9,7 +9,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -34,6 +37,8 @@ public class Restaurant {
     @JoinColumn(name="user_id")
     private User user;
 
+
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Reservation> reservations;
 
@@ -43,12 +48,20 @@ public class Restaurant {
     @OneToOne(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<RestaurantImage> images;
+
     public RestaurantResponseDto toResponseDto() {
         AddressResponseDto addressDto = null;
         if(address != null) {
             addressDto = address.toResponseDto();
         }
-        return new RestaurantResponseDto(id, name,capacity, openTime,closeTime, addressDto);
+        List<UUID> imageUUIDs = new LinkedList<>();
+        if(images != null) {
+
+         imageUUIDs = images.stream().map(RestaurantImage::getUuid).toList();
+        }
+        return new RestaurantResponseDto(id, name,capacity, openTime,closeTime, addressDto, imageUUIDs);
     }
 
     @Override

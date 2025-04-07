@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,7 @@ public class RestaurantController {
         return ResponseEntity.ok().body(restaurantService.findRestaurant(id).toResponseDto());
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/byUser")
     public ResponseEntity<List<RestaurantResponseDto>> findAllUsersRestaurants() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -44,6 +46,7 @@ public class RestaurantController {
         return ResponseEntity.ok().body(restaurantResponseDtos);
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> findAllRestaurantsPaginated(@RequestParam int page, @RequestParam int size, @RequestParam String searchSlug) {
         List<Restaurant> restaurants = restaurantService.findRestaurantsPaginated(page, size, searchSlug);
