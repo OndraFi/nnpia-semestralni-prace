@@ -21,7 +21,9 @@ export const useAuthStore = defineStore('authStore', {
         const exp = decoded.exp * 1000;
         const remainingMs = exp - now;
         console.log(`⏳ Token vyprší za ${Math.floor(remainingMs / 1000)} sekund (${Math.round(remainingMs / 60000)} minut)`);
-
+        if (remainingMs < 0) {
+          this.token = "";
+        }
         return remainingMs > 0;
       } catch {
         return false;

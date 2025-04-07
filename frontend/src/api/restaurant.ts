@@ -17,6 +17,7 @@ export interface Restaurant {
   openTime: string;
   closeTime: string;
   address?: Address;
+  imagesIds: Array<String>;
 }
 
 export interface RestaurantsPaginated {

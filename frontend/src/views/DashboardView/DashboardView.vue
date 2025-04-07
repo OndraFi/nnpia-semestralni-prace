@@ -1,17 +1,47 @@
 <template>
   <Default>
     <div class="container-md">
-    Dashboard
+    <h1>Dashboard</h1>
     <form @click.prevent="submitCreateForm">
-      <input type="text" minlength="4" required placeholder="název restaurace"
-             v-model="restaurantName">
-      <input type="number" required min="0" placeholder="Kapacita restaurace"
-        v-model="capacity">
-      <input type="time" required placeholder="otevírací doba"
-      v-model="openTime">
-      <input type="time" required placeholder="zavírací doba"
-      v-model="closeTime">
-      <input type="submit">
+      <div class="form-floating mt-3">
+        <input type="text"
+               minlength="4"
+               id="restaurantName"
+               class="form-control"
+               required
+               placeholder="název restaurace"
+               v-model="restaurantName">
+        <label for="restaurantName">Název restaurace</label>
+      </div>
+      <div class="form-floating mt-3">
+        <input type="number"
+               id="capacity"
+               class="form-control"
+               required
+               min="0"
+               placeholder="Kapacita restaurace"
+               v-model="capacity">
+        <label for="capacity">Kapacita restaurace</label>
+      </div>
+      <div class="form-floating mt-3">
+        <input type="time"
+               required
+               id="openTime"
+               class="form-control"
+               placeholder="otevírací doba"
+               v-model="openTime">
+        <label for="openTime">Otevýrací doba</label>
+      </div>
+      <div class="form-floating mt-3">
+        <input type="time"
+               id="closeTime"
+               required
+               placeholder="zavírací doba"
+               class="form-control"
+               v-model="closeTime">
+        <label for="closeTime">Čas zavření</label>
+      </div>
+      <input class="btn btn-primary w-100 mt-3" type="submit" value="Přidat">
     </form>
     <restaurant-card :restaurants="restaurants" :dashboard="true"/>
     </div>

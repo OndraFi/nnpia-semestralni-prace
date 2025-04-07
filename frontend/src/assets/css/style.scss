@@ -1,2 +1,9 @@
 @import "variables";
 @import "bootstrap";
+
+
+.nav-item{
+  .active{
+    border-bottom: 2px solid $primary;
+  }
+}

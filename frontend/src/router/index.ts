@@ -7,6 +7,7 @@ import {useAuthStore} from "@/stores/authStore.ts";
 import RestaurantEditView from "@/views/DashboardView/RestaurantEditView.vue";
 import RestaurantsView from "@/views/RestaurantsView.vue";
 import RestaurantDetailView from "@/views/RestaurantDetailView.vue";
+import CancelReservationView from "@/views/CancelReservationView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,11 @@ const router = createRouter({
       path: '/restaurant/:id',
       name: 'restaurant-detail',
       component: RestaurantDetailView
+    },
+    {
+      path: '/restaurant/:id/reservation/cancel/:uuid',
+      name: 'cancel-resrevation',
+      component: CancelReservationView
     },
     {
       path: '/dashboard',

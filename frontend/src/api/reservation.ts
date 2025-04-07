@@ -11,6 +11,7 @@ export interface Reservation {
   email : string;
   reservationName : string;
   numberOfPeople : number;
+  isAccepted: boolean;
 }
 
 export interface ReservationRequest {
@@ -35,6 +36,24 @@ export const getAvailableTimes = (restaurantId: number, date: string, numberOfPe
 
 export const createReservation = (restaurantId: number, reservationRequest: ReservationRequest) : Promise<Reservation> => {
   return axiosInstance.post(baseUrl + `/${restaurantId}/reservations`, reservationRequest).then(response=>{
+    return response.data;
+  })
+}
+
+export const getReservationsByRestaurantId = (restaurantId: number) : Promise<Array<Reservation>> => {
+  return axiosInstance.get(baseUrl + `/${restaurantId}/reservations`).then(response=>{
+    return response.data;
+  })
+}
+
+export const acceptReservation = (restaurantId: number, reservationId: number) : Promise<Reservation> => {
+  return axiosInstance.post(baseUrl + `/${restaurantId}/reservations/${reservationId}/accept`).then(response=>{
+    return response.data;
+  })
+}
+
+export const cancelReservation = (restaurantId: number, reservationUuid: number) : Promise<Reservation> => {
+  return axiosInstance.delete(baseUrl + `/${restaurantId}/reservations/${reservationUuid}`).then(response=>{
     return response.data;
   })
 }

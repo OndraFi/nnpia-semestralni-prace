@@ -1,12 +1,22 @@
 <template>
   <Default>
-    <div>
-      LOGIN
-      <form @submit.prevent="submit">
-        <input type="email" placeholder="email" v-model="email">
-        <input type="password" placeholder="heslo" v-model="password">
-        <input type="submit">
-      </form>
+    <div class="container-md">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <form @submit.prevent="submit" class="col-md-6 pt-5 p-3 shadow">
+          <h1>Přihlášení</h1>
+          <div class="form-floating">
+            <input type="email" id="email" class="form-control" placeholder="email" v-model="email">
+            <label for="email">Email</label>
+          </div>
+          <div class="form-floating mt-3">
+            <input type="password" id="password" class="form-control" placeholder="heslo" v-model="password">
+            <label for="password">Heslo</label>
+          </div>
+          <input class="btn btn-primary mt-3" type="submit" value="PŘIHLÁSIT">
+        </form>
+        <div class="col-md-3"></div>
+      </div>
     </div>
   </Default>
 </template>

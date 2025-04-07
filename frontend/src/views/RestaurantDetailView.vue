@@ -128,7 +128,7 @@ export default {
     },
     search: debounce(function () {
       this.getAvailableTimes();
-    }, 800),
+    }, 300),
     handleTimeSelected(selectedTime: ReservationTimeRange | null) {
       this.selectedTime = selectedTime;
     },

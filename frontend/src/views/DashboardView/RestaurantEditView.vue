@@ -1,28 +1,151 @@
 <template>
   <Default>
-    <form v-if="restaurant" @submit.prevent="updateRestaurant">
-      <input type="text" v-model="restaurant.name" placeholder="Název restaurace">
-      <input type="number" min="0" v-model="restaurant.capacity" placeholder="Kapacita restaurace">
-      <input type="time" v-model="restaurant.openTime" placeholder="Open time">
-      <input type="time" v-model="restaurant.closeTime" placeholder="Close time">
-      <input type="submit">
-    </form>
-    <form v-if="!(restaurant?.address)" @submit.prevent="createRestaurantAddress">
-      <input type="text" v-model="addressCreateRequest.country" required placeholder="country">
-      <input type="text" v-model="addressCreateRequest.city" required placeholder="city">
-      <input type="text" v-model="addressCreateRequest.street" required placeholder="street">
-      <input type="text" v-model="addressCreateRequest.buildingNumber" required placeholder="building Number">
-      <input type="text" v-model="addressCreateRequest.zipCode" required placeholder="zip">
-      <input type="submit">
-    </form>
-    <form v-if="restaurant?.address" @submit.prevent="updateRestaurantAddress">
-      <input type="text" v-model="restaurant.address.country" required placeholder="country">
-      <input type="text" v-model="restaurant.address.city" required placeholder="city">
-      <input type="text" v-model="restaurant.address.street" required placeholder="street">
-      <input type="text" v-model="restaurant.address.buildingNumber" required placeholder="building Number">
-      <input type="text" v-model="restaurant.address.zipCode" required placeholder="zip">
-      <input type="submit">
-    </form>
+    <div class="container-md">
+      <form v-if="restaurant" @submit.prevent="updateRestaurant">
+        <div class="form-floating mt-3">
+          <input type="text" id="name" class="form-control" v-model="restaurant.name"
+                 placeholder="Název restaurace">
+          <label for="name">Název restaurace</label>
+        </div>
+        <div class="form-floating mt-3">
+          <input type="number" id="capacity" class="form-control" min="0"
+                 v-model="restaurant.capacity" placeholder="Kapacita restaurace">
+          <label for="capacity">Kapacita restaurace</label>
+        </div>
+        <div class="form-floating mt-3">
+          <input type="time" id="openTime" class="form-control" v-model="restaurant.openTime"
+                 placeholder="Open time">
+          <label for="openTime">Otevírací doba</label>
+        </div>
+        <div class="form-floating mt-3">
+          <input type="time" id="closeTime" class="form-control" v-model="restaurant.closeTime"
+                 placeholder="Close time">
+          <label for="closeTime">Zavírací doba</label>
+        </div>
+        <input class="btn btn-primary w-100 mt-3" type="submit" value="Upravit Restauraci">
+      </form>
+      <hr>
+      <form v-if="!(restaurant?.address)" @submit.prevent="createRestaurantAddress">
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="country"
+                 v-model="addressCreateRequest.country"
+                 required
+                 placeholder="country">
+          <label for="country">Země</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="city"
+                 v-model="addressCreateRequest.city"
+                 required
+                 placeholder="city">
+          <label for="city">Město</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="street"
+                 v-model="addressCreateRequest.street"
+                 required
+                 placeholder="street">
+          <label for="street">Ulice</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="buildingNumber"
+                 v-model="addressCreateRequest.buildingNumber"
+                 required
+                 placeholder="building Number">
+          <label for="buildingNumber">Číslo popisné</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="zip"
+                 v-model="addressCreateRequest.zipCode"
+                 required
+                 placeholder="zip">
+          <label for="zip">PSČ</label>
+        </div>
+        <input class="btn btn-primary w-100 mt-3" value="Upravit adresu" type="submit">
+      </form>
+      <form v-if="restaurant?.address" @submit.prevent="updateRestaurantAddress">
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="country"
+                 v-model="restaurant.address.country"
+                 required
+                 placeholder="country">
+          <label for="country">Země</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="city"
+                 v-model="restaurant.address.city"
+                 required
+                 placeholder="city">
+          <label for="city">Město</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="street"
+                 v-model="restaurant.address.street"
+                 required
+                 placeholder="street">
+          <label for="street">Ulice</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="buildingNumber"
+                 v-model="restaurant.address.buildingNumber"
+                 required
+                 placeholder="building Number">
+          <label for="buildingNumber">Číslo popisné</label>
+        </div>
+        <div class="form-floating">
+          <input type="text"
+                 class="form-control mt-3"
+                 id="zip"
+                 v-model="restaurant.address.zipCode"
+                 required
+                 placeholder="zip">
+          <label for="zip">PSČ</label>
+        </div>
+        <input class="btn btn-primary w-100 mt-3" value="Upravit adresu" type="submit">
+      </form>
+      <form @submit.prevent="uploadImage">
+        <input type="file" @change="onFileChange">
+        <input type="submit" value="Přidat obrázek">
+      </form>
+      <div v-if="restaurant && restaurant.imagesIds.length > 0">
+        <img
+          v-for="image in restaurant.imagesIds"
+          :key="image"
+          :src="getRestaurantImageUrl(image)"
+          alt="restaurant image"
+          style="max-width: 200px; margin: 0.5rem;"
+        />
+      </div>
+      <div v-if="reservations" class="row shadow my-3" v-for="reservation in reservations">
+        {{"" + reservation.isAccepted}}
+        {{ reservation.id }}
+        {{ reservation.startTime }}
+        {{ reservation.endTime }}
+        {{ reservation.numberOfPeople }}
+        {{ reservation.reservationName }}
+        {{ reservation.phone }}
+        {{ reservation.email }}
+        <button @click="doAcceptReservation(reservation)">Potvrdit rezervaci</button>
+      </div>
+    </div>
   </Default>
 </template>;
 <script lang="ts">
@@ -35,39 +158,53 @@ import {
   findAddress,
   updateAddress
 } from "@/api/address.ts"
+import {
+  getRestaurantImageUrl,
+  uploadRestaurantImage
+} from "@/api/restaurantImage.ts";
+import {
+  acceptReservation,
+  getReservationsByRestaurantId,
+  type Reservation
+} from "@/api/reservation.ts";
 
 export default {
   components: {Default},
   data() {
-    let restaurant: Restaurant = null;
-    let addressCreateRequest : AddressRequest = {
-      street : "",
-      city : "",
+    let addressCreateRequest: AddressRequest = {
+      street: "",
+      city: "",
       buildingNumber: "",
-      zipCode : "",
+      zipCode: "",
       country: ""
     }
     return {
-      restaurant,
-      addressCreateRequest
+      restaurant: null as Restaurant | null,
+      file: null as File | null,
+      addressCreateRequest,
+      reservations: null as Array<Reservation> | null,
     }
   },
   methods: {
+    acceptReservation,
+    getRestaurantImageUrl,
     async findRestaurant() {
       await findRestaurantById(this.$route.params.id).then(response => {
         this.restaurant = response;
+        console.log(response);
       }).catch(e => {
         console.log(e);
       })
     },
     async updateRestaurant() {
       console.log("updating");
-      await updateRestaurantById(this.restaurant).then(restaurant => {
-        this.restaurant = restaurant;
-        console.log("updated");
-      }).catch(e => {
-        console.log(e)
-      })
+      if (this.restaurant)
+        await updateRestaurantById(this.restaurant).then(restaurant => {
+          this.restaurant = restaurant;
+          console.log("updated");
+        }).catch(e => {
+          console.log(e)
+        })
     },
     async findRestaurantAddress() {
       console.log("finding restaurant address");
@@ -75,28 +212,62 @@ export default {
         await findAddress(this.restaurant.id).then(address => {
           console.log(address);
           this.restaurant.address = address;
-        }).catch(e=>{
+        }).catch(e => {
           console.log(e);
         })
       }
     },
-    async createRestaurantAddress(){
-      await createAddress(this.restaurant.id,this.addressCreateRequest).then(address=>{
+    async createRestaurantAddress() {
+      await createAddress(this.restaurant.id, this.addressCreateRequest).then(address => {
         this.restaurant.address = address;
-      }).catch(e=>{
+      }).catch(e => {
         console.log(e);
       })
     },
-    async updateRestaurantAddress(){
-      await updateAddress(this.restaurant.id, this.restaurant.address).then(address=>{
+    async updateRestaurantAddress() {
+      await updateAddress(this.restaurant.id, this.restaurant.address).then(address => {
         this.restaurant.address = address;
-      }).catch(e=>{
+      }).catch(e => {
         console.log(e);
       })
+    },
+    onFileChange(event: Event) {
+      const target = event.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        this.file = target.files[0];
+      }
+    },
+    async uploadImage() {
+      if (this.restaurant && this.file) {
+        const formData = new FormData();
+        formData.append('file', this.file);
+        await uploadRestaurantImage(this.restaurant.id, formData)
+        this.file = null;
+      }
+    },
+    async findReservations() {
+      if (this.restaurant) {
+        getReservationsByRestaurantId(this.restaurant.id).then(response => {
+          this.reservations = response;
+          console.log(response);
+        }).catch(e => {
+          console.log(e);
+        })
+      }
+    },
+    async doAcceptReservation(reservation: Reservation) {
+      if (this.restaurant) {
+        acceptReservation(this.restaurant.id, reservation.id).then(response => {
+          this.findReservations();
+        }).catch(e => {
+          console.log(e);
+        })
+      }
     }
   },
   async created() {
     await this.findRestaurant();
+    await this.findReservations();
     // await this.findRestaurantAddress();
   }
 }

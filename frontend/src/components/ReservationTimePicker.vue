@@ -10,7 +10,7 @@
            class="timeBlock  mt-4"
            :class="{'bg-primary hovered' : isInHoveredRange(index) || index === startTime, 'rounded-start' : index === startTime || (endTime && index === endTime+1), 'rounded-end' : index === endTime || (startTime && index === startTime-1), 'bg-secondary cursor-not-allowed' : unavailableTimesIndexes.includes(index)}">
 
-      <small class="time muted">
+      <small class="time muted" v-if="value.start.split(':')[1] === '00' || value.start.split(':')[1] === '30'">
       {{ value.start }}
       </small>
         <small v-if="index === times.length-1"
@@ -28,7 +28,7 @@
               class="time-tooltip-sm end">{{ times[endTime].end }}</span>
       </div>
     </div>
-    <div class="text-center">{{ selectedTime }}</div>
+<!--    <div class="text-center">{{ selectedTime }}</div>-->
   </div>
 </template>
 <script lang="ts">
@@ -205,13 +205,31 @@ export default {
   user-select: none;
   .time {
     position: absolute;
-    top: -20px;
-    left:-50%;
+    top: -25px;
+    left:-31%;
+    &::before{
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      width: 1px;
+      height: 6px;
+      background-color: black;
+    }
   }
   .time-end{
     position: absolute;
-    top: -20px;
-    left:+50%;
+    top: -25px;
+    left:+61%;
+    &::before{
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      width: 1px;
+      height: 6px;
+      background-color: black;
+    }
   }
   .time-tooltip{
     position: absolute;
