@@ -5,6 +5,7 @@ const baseUrl = import.meta.env.VITE_API_URL + "/restaurants";
 
 export interface Reservation {
   id : number;
+  uuid : string;
   startTime : string;
   endTime : string;
   phone : string;
@@ -52,7 +53,7 @@ export const acceptReservation = (restaurantId: number, reservationId: number) :
   })
 }
 
-export const cancelReservation = (restaurantId: number, reservationUuid: number) : Promise<Reservation> => {
+export const cancelReservation = (restaurantId: number, reservationUuid: string) : Promise<Reservation> => {
   return axiosInstance.delete(baseUrl + `/${restaurantId}/reservations/${reservationUuid}`).then(response=>{
     return response.data;
   })

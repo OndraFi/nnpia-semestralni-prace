@@ -24,7 +24,7 @@
       <div v-if="total  === 0 && !loadingRestaurants" class="text-center p-3 bg-warning">Žádná restaurace nebyla nalezena!</div>
 
       <div class="row" v-if="total > 0">
-        <nav class="col-12 text-center btn">
+        <nav class="col-12 text-center">
           <ul class="pagination justify-content-center">
             <li class="page-item">
               <button class="page-link" @click="goToFirstPage()">
@@ -141,6 +141,7 @@ export default {
       this.findRestaurants();
     },
     search: debounce(function() {
+      this.page = 0;
       this.findRestaurants();
     }, 500),
     canGoToPage(page: number){

@@ -135,15 +135,36 @@
         />
       </div>
       <div v-if="reservations" class="row shadow my-3" v-for="reservation in reservations">
-        {{"" + reservation.isAccepted}}
-        {{ reservation.id }}
-        {{ reservation.startTime }}
-        {{ reservation.endTime }}
-        {{ reservation.numberOfPeople }}
-        {{ reservation.reservationName }}
-        {{ reservation.phone }}
-        {{ reservation.email }}
-        <button @click="doAcceptReservation(reservation)">Potvrdit rezervaci</button>
+        <p class="position-relative">
+          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger" v-if="!reservation.isAccepted">Nová</span>
+          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-success" v-else>Schválená</span>
+        </p>
+        id: {{ reservation.id }}
+        <br>
+        uuid: {{ reservation.uuid }}
+        <br>
+        <b>začátek rezervace:</b> {{ reservation.startTime }}
+        <br>
+        konec rezervacec: {{ reservation.endTime }}
+        <br>
+        počet osob: {{ reservation.numberOfPeople }}
+        <br>
+        na jméno: {{ reservation.reservationName }}
+        <br>
+        telefon: {{ reservation.phone }}
+        <br>
+        email: {{ reservation.email }}
+        <br>
+        <button
+          class="btn btn-primary"
+          @click="doAcceptReservation(reservation)">
+          Potvrdit rezervaci
+        </button>
+        <button
+          class="btn btn-danger"
+          @click="doCancelReservation(reservation)">
+          Zrušit rezervaci
+        </button>
       </div>
     </div>
   </Default>
@@ -163,7 +184,7 @@ import {
   uploadRestaurantImage
 } from "@/api/restaurantImage.ts";
 import {
-  acceptReservation,
+  acceptReservation, cancelReservation,
   getReservationsByRestaurantId,
   type Reservation
 } from "@/api/reservation.ts";
@@ -258,6 +279,15 @@ export default {
     async doAcceptReservation(reservation: Reservation) {
       if (this.restaurant) {
         acceptReservation(this.restaurant.id, reservation.id).then(response => {
+          this.findReservations();
+        }).catch(e => {
+          console.log(e);
+        })
+      }
+    },
+    async doCancelReservation(reservation: Reservation) {
+      if (this.restaurant) {
+        cancelReservation(this.restaurant.id, reservation.uuid).then(response => {
           this.findReservations();
         }).catch(e => {
           console.log(e);

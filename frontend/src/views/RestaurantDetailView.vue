@@ -2,7 +2,7 @@
   <Default>
     <div class="container-md" v-if="restaurant" @submit.prevent="sendReservation">
       <div id="resteaurantDetail">
-        {{restaurant}}
+<!--        {{restaurant}}-->
         <h1>{{restaurant.name}}</h1>
       </div>
       <form class="shadow p-3" v-if="!reservation">
