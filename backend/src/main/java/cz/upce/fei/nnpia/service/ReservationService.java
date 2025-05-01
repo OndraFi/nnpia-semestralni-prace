@@ -6,6 +6,7 @@ import cz.upce.fei.nnpia.domain.Restaurant;
 import cz.upce.fei.nnpia.domain.User;
 import cz.upce.fei.nnpia.domain.value.TimeRange;
 import cz.upce.fei.nnpia.dto.ReservationRequestDto;
+import cz.upce.fei.nnpia.exception.BadRequestException;
 import cz.upce.fei.nnpia.exception.NotFoundException;
 import cz.upce.fei.nnpia.exception.OwnershipException;
 import cz.upce.fei.nnpia.repository.ReservationRepository;
@@ -34,6 +35,10 @@ public class ReservationService {
     }
 
     public Reservation createReservation(long restaurantId, ReservationRequestDto reservationRequestDto) throws MailjetException {
+        if(reservationRequestDto.getStartTime().isBefore(LocalDateTime.now()) || reservationRequestDto.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Reservation time must be in the future");
+        }
+
         Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
         List<Reservation> reservations = reservationRepository.findByRestaurantAndStartTimeBetween(
                 restaurant, reservationRequestDto.getStartTime().toLocalDate().atStartOfDay(),

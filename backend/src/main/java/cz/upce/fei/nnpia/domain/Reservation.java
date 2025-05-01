@@ -62,6 +62,6 @@ public class Reservation {
     }
 
     public ReservationResponseDto toDto(){
-        return new ReservationResponseDto(id,startTime,endTime,phone,email,reservationName,numberOfPeople,isAccepted);
+        return new ReservationResponseDto(id,uuid,startTime,endTime,phone,email,reservationName,numberOfPeople,isAccepted);
     }
 }
