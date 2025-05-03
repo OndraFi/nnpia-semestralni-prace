@@ -85,6 +85,12 @@ public class ReservationService {
         while (!current.isAfter(closeTime)) {
             LocalDateTime currentTime = LocalDateTime.of(date, current);
 
+            // Block times that have already passed today
+            if (currentTime.isBefore(LocalDateTime.now())) {
+                current = current.plus(granularity);
+                continue;
+            }
+
             long peopleNow = reservations.stream()
                     .filter(res -> res.getStartTime().isBefore(currentTime.plus(granularity)) &&
                             res.getEndTime().isAfter(currentTime))
