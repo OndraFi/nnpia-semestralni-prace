@@ -3,14 +3,10 @@
        class="my-4 shadow restaurant-card border-4">
     <router-link class="row text-decoration-none text-black"
                :to="dashboard ? `/dashboard/restaurant/${restaurant.id}` :`/restaurant/${restaurant.id}`">
-<!--      <img v-for="(image,index) in restaurant.imagesIds"-->
-<!--           :key="image"-->
-<!--           :src="getRestaurantImageUrl(image)"-->
-<!--           alt="restaurant image"-->
-<!--           style="max-width: 200px;"-->
-<!--           class="d-block">-->
       <div class="col-md-4">
-        <div class="restaurant-img" v-for="(image,index) in restaurant.imagesIds" :style="`background-image: url(${getRestaurantImageUrl(image)})`">
+        <div class="restaurant-img"
+             v-if="restaurant.imagesIds && restaurant.imagesIds.length > 0"
+             :style="`background-image: url(${getRestaurantImageUrl(restaurant.imagesIds[0])})`">
 
         </div>
       </div>

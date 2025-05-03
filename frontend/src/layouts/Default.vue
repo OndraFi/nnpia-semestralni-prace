@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-md">
       <router-link class="navbar-brand" to="/">Rezervovač</router-link>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -21,7 +21,7 @@
           </li>
           <li class="nav-item" v-if="!authStore.isLoggedIn">
             <router-link class="nav-link" :class="{'active' : route('/login')}" aria-current="page"
-                         to="/login">Přihlásit
+                         to="/login">Přihlášení
             </router-link>
           </li>
           <li class="nav-item" v-if="!authStore.isLoggedIn">

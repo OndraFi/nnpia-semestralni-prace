@@ -1,6 +1,8 @@
 <template>
   <Default>
+
     <div class="container-md">
+      <span class="h3">Základní nastavení</span>
       <form v-if="restaurant" @submit.prevent="updateRestaurant">
         <div class="form-floating mt-3">
           <input type="text" id="name" class="form-control" v-model="restaurant.name"
@@ -25,6 +27,7 @@
         <input class="btn btn-primary w-100 mt-3" type="submit" value="Upravit Restauraci">
       </form>
       <hr>
+      <span class="h3">Adresa</span>
       <form v-if="!(restaurant?.address)" @submit.prevent="createRestaurantAddress">
         <div class="form-floating">
           <input type="text"
@@ -121,6 +124,12 @@
         </div>
         <input class="btn btn-primary w-100 mt-3" value="Upravit adresu" type="submit">
       </form>
+
+      <hr>
+      <span class="h3">Obrázky</span>
+      <br>
+      <span
+        class="small text-muted">První obrázek bude použit jako náhledový v seznamu restaurací</span>
       <form @submit.prevent="uploadImage">
         <input type="file" @change="onFileChange">
         <input type="submit" value="Přidat obrázek">
@@ -134,10 +143,27 @@
           style="max-width: 200px; margin: 0.5rem;"
         />
       </div>
+
+      <hr>
+      <span class="h-3">Widget</span>
+      <div v-if="restaurant">
+        <router-link :to="`/restaurant/${restaurant.id}/widget`"
+                     class="btn btn-primary">
+          Widget
+        </router-link>
+      </div>
+
+      <!--      REZERVACE-->
+      <hr>
+      <span class="h3">Rezervace</span>
       <div v-if="reservations" class="row shadow my-3" v-for="reservation in reservations">
         <p class="position-relative">
-          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger" v-if="!reservation.isAccepted">Nová</span>
-          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-success" v-else>Schválená</span>
+          <span
+            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
+            v-if="!reservation.isAccepted">Nová</span>
+          <span
+            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-success"
+            v-else>Schválená</span>
         </p>
         id: {{ reservation.id }}
         <br>
@@ -156,6 +182,7 @@
         email: {{ reservation.email }}
         <br>
         <button
+          v-if="!reservation.isAccepted"
           class="btn btn-primary"
           @click="doAcceptReservation(reservation)">
           Potvrdit rezervaci
@@ -166,9 +193,16 @@
           Zrušit rezervaci
         </button>
       </div>
+      <div v-if="reservations && reservations.length == 0"
+           class="text-center p-3 fw-bold shadow bg-light mt-3">
+        <img src="../../assets/img/warning.svg"
+             alt="no restaurant found"
+             style="height: 50px">
+        Nemáte žádné rezervace!
+      </div>
     </div>
   </Default>
-</template>;
+</template>
 <script lang="ts">
 import Default from "@/layouts/Default.vue";
 import {findRestaurantById, type Restaurant, updateRestaurantById} from "@/api/restaurant.ts";
@@ -222,8 +256,16 @@ export default {
       if (this.restaurant)
         await updateRestaurantById(this.restaurant).then(restaurant => {
           this.restaurant = restaurant;
+          this.$notify({
+            type: 'success',
+            text: 'Úprava proběhla v pořádku.'
+          })
           console.log("updated");
         }).catch(e => {
+          this.$notify({
+            type: 'error',
+            text: 'Nepovedlo se uložit změny.'
+          })
           console.log(e)
         })
     },
@@ -241,14 +283,30 @@ export default {
     async createRestaurantAddress() {
       await createAddress(this.restaurant.id, this.addressCreateRequest).then(address => {
         this.restaurant.address = address;
+        this.$notify({
+          type: 'success',
+          text: 'Adresa upravena.'
+        })
       }).catch(e => {
+        this.$notify({
+          type: 'error',
+          text: 'Nepovedlo se upravit adresu.'
+        })
         console.log(e);
       })
     },
     async updateRestaurantAddress() {
       await updateAddress(this.restaurant.id, this.restaurant.address).then(address => {
         this.restaurant.address = address;
+        this.$notify({
+          type: 'success',
+          text: 'Adresa upravena.'
+        })
       }).catch(e => {
+        this.$notify({
+          type: 'error',
+          text: 'Nepovedlo se upravit adresu.'
+        })
         console.log(e);
       })
     },
@@ -262,7 +320,17 @@ export default {
       if (this.restaurant && this.file) {
         const formData = new FormData();
         formData.append('file', this.file);
-        await uploadRestaurantImage(this.restaurant.id, formData)
+        await uploadRestaurantImage(this.restaurant.id, formData).then(response => {
+          this.$notify({
+            type: 'success',
+            text: 'Obrázek přidán.'
+          })
+        }).catch(e=>{
+          this.$notify({
+            type: 'error',
+            text: 'Nepovedlo se přidat obrázek.'
+          })
+        })
         this.file = null;
       }
     },
@@ -280,7 +348,15 @@ export default {
       if (this.restaurant) {
         acceptReservation(this.restaurant.id, reservation.id).then(response => {
           this.findReservations();
+          this.$notify({
+            type: 'success',
+            text: 'Rezervace potvrzena.'
+          })
         }).catch(e => {
+          this.$notify({
+            type: 'error',
+            text: 'Nepovedlo se potvrdit rezervaci.'
+          })
           console.log(e);
         })
       }
@@ -289,7 +365,15 @@ export default {
       if (this.restaurant) {
         cancelReservation(this.restaurant.id, reservation.uuid).then(response => {
           this.findReservations();
+          this.$notify({
+            type: 'success',
+            text: 'Rezervace zrušena.'
+          })
         }).catch(e => {
+          this.$notify({
+            type: 'error',
+            text: 'Nepovedlo se zrušit rezervaci.'
+          })
           console.log(e);
         })
       }

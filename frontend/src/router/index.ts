@@ -8,6 +8,7 @@ import RestaurantEditView from "@/views/DashboardView/RestaurantEditView.vue";
 import RestaurantsView from "@/views/RestaurantsView.vue";
 import RestaurantDetailView from "@/views/RestaurantDetailView.vue";
 import CancelReservationView from "@/views/CancelReservationView.vue";
+import WidgetView from "@/views/WidgetView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,6 +42,11 @@ const router = createRouter({
       path: '/restaurant/:id/reservation/cancel/:uuid',
       name: 'cancel-resrevation',
       component: CancelReservationView
+    },
+    {
+      path: '/restaurant/:id/widget',
+      name: 'restaurant-widget',
+      component: WidgetView
     },
     {
       path: '/dashboard',

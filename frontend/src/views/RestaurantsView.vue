@@ -1,62 +1,68 @@
 <template>
   <Default>
-    <h1 class="text-center my-5">Restaurace</h1>
-    <div class="my-5 container-md">
-      <div class="d-flex">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="search" v-model="searchSlug" @input="search"
-                 placeholder="Název restaurace"/>
-          <label for="search">Název restaurace</label>
+    <h1 class="text-center mt-5">Restaurace</h1>
+    <img src="../assets/img/deviders/devider-2.svg" class="mt-5" alt="devider">
+
+    <div class="bg-light pb-3 pt-5">
+      <div class="mb-5 container-md bg-white p-5 rounded shadow-sm">
+        <div class="d-flex">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="search" v-model="searchSlug" @input="search"
+                   placeholder="Název restaurace"/>
+            <label for="search">Název restaurace</label>
+          </div>
+          <div class="dropdown ms-auto">
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              {{ size }}
+            </button>
+            <ul class="dropdown-menu">
+              <li v-for="s in sizes">
+                <button class="dropdown-item" @click="selectPageSize(s)">{{ s }}</button>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="dropdown ms-auto">
-          <button class="btn btn-secondary dropdown-toggle" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-            {{ size }}
-          </button>
-          <ul class="dropdown-menu">
-            <li v-for="s in sizes">
-              <button class="dropdown-item" @click="selectPageSize(s)">{{ s }}</button>
-            </li>
-          </ul>
+        <restaurant-card :restaurants="restaurants"/>
+        <div v-if="total  === 0 && !loadingRestaurants" class="text-center p-3 fw-bold shadow bg-light mt-3">
+          <img src="../assets/img/warning.svg"
+               alt="no restaurant found"
+               style="height: 50px">
+          Žádná restaurace nebyla nalezena!
         </div>
-      </div>
-      <restaurant-card :restaurants="restaurants"/>
-      <div v-if="total  === 0 && !loadingRestaurants" class="text-center p-3 bg-warning">Žádná restaurace nebyla nalezena!</div>
 
-      <div class="row" v-if="total > 0">
-        <nav class="col-12 text-center">
-          <ul class="pagination justify-content-center">
-            <li class="page-item">
-              <button class="page-link" @click="goToFirstPage()">
-                1
-              </button>
-            </li>
-            <li class="page-item">
-              <button class="page-link" @click="goToPreviousPage()">
-                předchozí
-              </button>
-            </li>
-            <li class="page-item">
-              <span class="page-link disabled">{{page+1}}</span>
-            </li>
-            <li class="page-item">
-              <button class="page-link" @click="goToNextPage()">
-                další
-              </button>
-            </li>
-            <li class="page-item">
-              <button class="page-link" @click="goToLastPage()">
-                {{ maxPages }}
-              </button>
-            </li>
-          </ul>
-
-
-
-
-        </nav>
+        <div class="row" v-if="total > 0">
+          <nav class="col-12 text-center">
+            <ul class="pagination justify-content-center">
+              <li class="page-item">
+                <button class="page-link" @click="goToFirstPage()">
+                  1
+                </button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" @click="goToPreviousPage()">
+                  předchozí
+                </button>
+              </li>
+              <li class="page-item">
+                <span class="page-link disabled">{{page+1}}</span>
+              </li>
+              <li class="page-item">
+                <button class="page-link" @click="goToNextPage()">
+                  další
+                </button>
+              </li>
+              <li class="page-item">
+                <button class="page-link" @click="goToLastPage()">
+                  {{ maxPages }}
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
+    <img src="../assets/img/deviders/devider-6.svg" alt="devider" width="100%">
   </Default>
 </template>
 <script lang="ts">
@@ -111,6 +117,7 @@ export default {
       this.restaurants = [];
       this.total = 0;
       await findRestaurantsPaginated(this.page, this.size, this.searchSlug).then((restaurantsPaginated: RestaurantsPaginated) => {
+        console.log(restaurantsPaginated);
         this.restaurants = restaurantsPaginated.restaurants;
         this.total = restaurantsPaginated.total;
       })
