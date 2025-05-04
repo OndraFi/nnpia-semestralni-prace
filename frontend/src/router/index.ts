@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   if ((to.name === 'login' || to.name === 'sign-up') && authStore.isLoggedIn )
     next({name: 'dashboard'})
-  else if(to.name === 'dashboard' && !authStore.isLoggedIn)
+  else if(to.path === 'dashboard' || to.name==='restaurant-edit' && !authStore.isLoggedIn)
     next({name:'login'})
   else next()
 })

@@ -1,10 +1,12 @@
 <template>
   <Default>
-    <h1 v-if="restaurant" class="text-center mt-5 display-4">{{ restaurant.name }}</h1>
+    <h1 v-if="restaurant" class="text-center my-5 display-4">{{ restaurant.name }}</h1>
     <img src="../assets/img/deviders/devider-2.svg" alt="devider">
 
     <div class="bg-light pb-3 pt-5">
-      <div class="container-md bg-white shadow-sm rounded" v-if="restaurant">
+      <div class="container-md bg-white shadow-sm rounded border"
+           style="margin-top: -170px; position: relative; z-index: 10;"
+           v-if="restaurant">
         <restaurant-reservation />
       </div>
     </div>

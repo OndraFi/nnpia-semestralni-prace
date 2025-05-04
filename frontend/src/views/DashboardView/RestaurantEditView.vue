@@ -1,7 +1,6 @@
 <template>
   <Default>
-
-    <div class="container-md shadow-sm pb-5 px-5 pt-2 rounded">
+    <div class="container-md border-start border-end border-bottom shadow-sm pb-5 px-5 pt-2 rounded">
       <div class="row mb-5 border-bottom" style="cursor: pointer;">
         <div class="col-3" @click="menu='rezervace'"
              :class="{ 'border-top border-primary border-3': menu === 'rezervace', 'text-muted bg-light' : menu !== 'rezervace' }">

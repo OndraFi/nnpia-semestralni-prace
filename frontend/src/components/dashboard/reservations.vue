@@ -3,7 +3,7 @@
     <span class="h3">Rezervace</span>
     <span v-if="reservations" class="text-muted small"> ({{ reservations.length }})</span>
     <div v-if="reservations" v-for="reservation in reservations"
-         class="card my-3 shadow border-0">
+         class="card my-3 border-bottom border-0">
       <div class="card-body row align-items-center">
         <!-- Stav rezervace jako ikona a badge -->
         <div class="col-md-2 text-center">
@@ -94,7 +94,7 @@ export default {
       if (this.restaurant) {
         getReservationsByRestaurantId(this.restaurant.id).then(response => {
           this.reservations = response;
-          console.log(response);
+          console.log("reservations",response);
         }).catch(e => {
           console.log(e);
         })
