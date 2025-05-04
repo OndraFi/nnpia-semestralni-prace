@@ -94,10 +94,42 @@
         </div>
       </div>
     </form>
-    <div v-else class="p-3 shadow">
-      <h2>Vašer rezervace na jméno <b>{{ reservation.reservationName }}</b> čeká na potvrzení!</h2>
-      <p>Vyčkejte na email a rezervaci potvrdťke kliknutím na link.</p>
+    <div v-else class="p-4 shadow-sm bg-light rounded border-start border-4 border-warning">
+      <div class="d-flex align-items-start">
+        <i class="bi bi-hourglass-split text-warning fs-1 me-3"></i>
+        <div>
+          <h4 class="mb-2">
+            Vaše rezervace na jméno <strong>{{ reservation.reservationName }}</strong> čeká na potvrzení!
+          </h4>
+          <p class="mb-2">
+            Prosím, vyčkejte až bude vaše rezervace potvrzena.
+            Informaci o potvrzení dostanente na email:
+            <strong>{{reservation.email}}</strong>
+          </p>
+        </div>
+        <div>
+          <div class="rounded border-start ms-4 ps-4">
+            <p class="mb-1">
+              <strong>Počet osob:</strong>
+              {{ reservation.numberOfPeople }}
+              <span v-if="reservation.numberOfPeople === 1">osoba</span>
+              <span v-else-if="reservation.numberOfPeople < 5">osoby</span>
+              <span v-else>osob</span>
+            </p>
+            <p class="mb-1">
+              <strong>Datum:</strong>
+              {{ new Date(reservation.startTime).toLocaleDateString() }}
+            </p>
+            <p class="mb-0">
+              <strong>Čas:</strong>
+              {{ new Date(reservation.startTime).toLocaleTimeString() }} – {{ new Date(reservation.endTime).toLocaleTimeString() }}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+
+
   </div>
 
 </template>
