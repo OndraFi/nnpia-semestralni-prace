@@ -46,4 +46,15 @@ public class RestaurantImageService {
     public RestaurantImage findByUuid(UUID uuid) {
         return restaurantImageRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundException("Restaurant not found"));
     }
+
+    public void deleteRestaurantImage(UUID uuid, User user) {
+        RestaurantImage image = restaurantImageRepository.findByUuid(uuid)
+                .orElseThrow(() -> new NotFoundException("Image not found"));
+
+        if (image.getRestaurant().getUser().getId() != user.getId()) {
+            throw new OwnershipException("You are not the owner!");
+        }
+
+        restaurantImageRepository.delete(image);
+    }
 }

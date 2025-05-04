@@ -50,5 +50,13 @@ public class RestaurantImageController {
                 .body(image.getData());
     }
 
+    @Transactional
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<?> deleteImage(@PathVariable UUID uuid) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        restaurantImageService.deleteRestaurantImage(uuid, user);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

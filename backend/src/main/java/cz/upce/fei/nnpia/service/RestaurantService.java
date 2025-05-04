@@ -24,7 +24,7 @@ public class RestaurantService {
     }
 
     public Restaurant createRestaurant(Restaurant restaurant) {
-        if (restaurant.getOpenTime().isAfter(restaurant.getCloseTime())) {
+        if (restaurant.getOpenTime().plusHours(1).isAfter(restaurant.getCloseTime())) {
             throw new BadRequestException("open time has to be lower than close time!");
         }
         return restaurantRepository.save(restaurant);

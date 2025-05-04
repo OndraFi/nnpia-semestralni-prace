@@ -58,7 +58,7 @@ public class ReservationService {
         Reservation reservation = reservationRequestDto.toReservation(restaurant);
         reservationRepository.save(reservation);
 
-        mailJetService.sendReservationEmail(reservationRequestDto.getEmail(), restaurant.getId(), reservation.getUuid());
+        mailJetService.sendReservationEmail(reservationRequestDto, restaurant.getId(), reservation.getUuid());
 
         return reservation;
     }
@@ -127,7 +127,9 @@ public class ReservationService {
         if (restaurant.getUser().getId() != user.getId()) {
             throw new OwnershipException("You are not the owner of this restaurant");
         }
-        return reservationRepository.findAllByRestaurantId(restaurantId);
+        List<Reservation> reservations = reservationRepository.findAllByRestaurantId(restaurantId);
+        reservations.sort((r1, r2) -> r1.getStartTime().compareTo(r2.getStartTime()));
+        return reservations;
     }
 
     public Reservation acceptReservation(@Min(1) long restaurantId, Long reservationId, User user) throws MailjetException {
@@ -143,7 +145,7 @@ public class ReservationService {
         reservation.setIsAccepted(true);
         reservationRepository.save(reservation);
 
-        mailJetService.sendReservationAcceptedEmail(reservation.getEmail(),restaurant.getId(), reservation.getUuid());
+        mailJetService.sendReservationAcceptedEmail(reservation,restaurant.getId(), reservation.getUuid());
 
         return reservation;
     }
@@ -155,7 +157,7 @@ public class ReservationService {
             throw new NotFoundException("Reservation not found");
         }
         Reservation reservation = reservationRepository.findByUuid(reservationUuid);
-        mailJetService.sendReservationCancelEmail(reservation.getEmail());
+        mailJetService.sendReservationCancelEmail(reservation);
         reservationRepository.deleteByUuid(reservationUuid);
     }
 }
