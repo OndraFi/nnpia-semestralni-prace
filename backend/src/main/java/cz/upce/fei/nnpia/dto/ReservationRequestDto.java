@@ -1,5 +1,6 @@
 package cz.upce.fei.nnpia.dto;
 
+import cz.upce.fei.nnpia.domain.Desk;
 import cz.upce.fei.nnpia.domain.Reservation;
 import cz.upce.fei.nnpia.domain.Restaurant;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ public class ReservationRequestDto {
     private String email;
     private String reservationName;
     private long numberOfPeople;
+    private Desk desk;
 
     public Reservation toReservation(Restaurant restaurant){
         return new Reservation(startTime,endTime,phone,email,reservationName,numberOfPeople, restaurant);

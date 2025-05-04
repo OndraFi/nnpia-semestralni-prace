@@ -39,6 +39,7 @@ public class RestaurantService {
         restaurant.setCapacity(restaurantRequestDto.getCapacity());
         restaurant.setOpenTime(restaurantRequestDto.getOpenTime());
         restaurant.setCloseTime(restaurantRequestDto.getCloseTime());
+        restaurant.setUsesDesks(restaurantRequestDto.getUsesDesks());
         restaurantRepository.save(restaurant);
         return restaurant;
     }

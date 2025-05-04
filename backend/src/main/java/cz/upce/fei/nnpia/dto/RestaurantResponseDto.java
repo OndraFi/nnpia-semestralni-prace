@@ -19,4 +19,5 @@ public class RestaurantResponseDto {
     private LocalTime closeTime;
     private AddressResponseDto address;
     private List<UUID> imagesIds;
+    private Boolean usesDesks;
 }

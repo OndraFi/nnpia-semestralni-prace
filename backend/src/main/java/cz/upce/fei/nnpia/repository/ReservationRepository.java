@@ -21,4 +21,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     boolean existsByUuid(UUID uuid);
 
     Reservation findByUuid(UUID uuid);
+
+    List<Reservation> findByDeskIdAndStartTimeBetween(@Min(1) long deskId, LocalDateTime from, LocalDateTime to);
+
+    List<Reservation> findReservationsByDeskId(long id);
 }

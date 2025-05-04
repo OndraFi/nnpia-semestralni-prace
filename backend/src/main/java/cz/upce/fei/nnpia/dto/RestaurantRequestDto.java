@@ -29,7 +29,10 @@ public class RestaurantRequestDto {
     @NotNull
     private LocalTime closeTime;
 
+    @NotNull
+    private Boolean usesDesks;
+
     public Restaurant toRestaurant(User user) {
-        return new Restaurant(name,capacity,openTime,closeTime, user);
+        return new Restaurant(name, usesDesks,capacity,openTime,closeTime, user);
     }
 }

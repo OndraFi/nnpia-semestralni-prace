@@ -37,7 +37,7 @@ public class DataInitializer implements CommandLineRunner {
 
             LocalTime openTime = LocalTime.of(8, 0);
             LocalTime closeTime = LocalTime.of(22, 0);
-            Restaurant restaurant = new Restaurant("Admin Restaurant",50,openTime,closeTime,user);
+            Restaurant restaurant = new Restaurant("Admin Restaurant",false,50,openTime,closeTime,user);
             if(!restaurantRepository.existsById(restaurant.getId())) {
                 log.info("Creating restaurant {}", restaurant.getId());
                 restaurantRepository.save(restaurant);

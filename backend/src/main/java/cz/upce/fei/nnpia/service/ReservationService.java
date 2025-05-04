@@ -56,6 +56,9 @@ public class ReservationService {
         }
 
         Reservation reservation = reservationRequestDto.toReservation(restaurant);
+
+//        System.out.println("DESK" + reservationRequestDto.getDesk().getName());
+        reservation.setDesk(reservationRequestDto.getDesk());
         reservationRepository.save(reservation);
 
         mailJetService.sendReservationEmail(reservationRequestDto, restaurant.getId(), reservation.getUuid());
@@ -122,6 +125,58 @@ public class ReservationService {
         return availableRanges;
     }
 
+    public List<TimeRange> getAvailableTimeBlocksForDesk(@Min(1) long restaurantId, @Min(1) long deskId, LocalDate date) {
+        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
+
+        LocalTime openTime = restaurant.getOpenTime();
+        LocalTime closeTime = restaurant.getCloseTime();
+        Duration granularity = Duration.ofMinutes(15);
+
+        LocalDateTime from = date.atStartOfDay();
+        LocalDateTime to = date.atTime(LocalTime.MAX);
+
+        List<Reservation> reservations = reservationRepository.findByDeskIdAndStartTimeBetween(deskId, from, to);
+
+        List<TimeRange> availableRanges = new ArrayList<>();
+
+        LocalTime currentStart = openTime;
+        LocalTime current = openTime;
+        boolean inFreeBlock = false;
+
+        while (!current.isAfter(closeTime)) {
+            LocalDateTime currentTime = LocalDateTime.of(date, current);
+
+            if (currentTime.isBefore(LocalDateTime.now())) {
+                current = current.plus(granularity);
+                continue;
+            }
+
+            boolean isBlocked = reservations.stream()
+                    .anyMatch(res -> res.getStartTime().isBefore(currentTime.plus(granularity)) &&
+                            res.getEndTime().isAfter(currentTime));
+
+            if (!isBlocked) {
+                if (!inFreeBlock) {
+                    currentStart = current;
+                    inFreeBlock = true;
+                }
+            } else {
+                if (inFreeBlock) {
+                    availableRanges.add(new TimeRange(currentStart, current));
+                    inFreeBlock = false;
+                }
+            }
+
+            current = current.plus(granularity);
+        }
+
+        if (inFreeBlock && !current.equals(currentStart)) {
+            availableRanges.add(new TimeRange(currentStart, closeTime));
+        }
+
+        return availableRanges;
+    }
+
     public List<Reservation> getReservations(@Min(1) long restaurantId, User user) {
         Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
         if (restaurant.getUser().getId() != user.getId()) {
@@ -151,7 +206,6 @@ public class ReservationService {
     }
 
     public void deleteReservation(@Min(1) long restaurantId, UUID reservationUuid) throws MailjetException {
-        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
 
         if(!reservationRepository.existsByUuid(reservationUuid)) {
             throw new NotFoundException("Reservation not found");

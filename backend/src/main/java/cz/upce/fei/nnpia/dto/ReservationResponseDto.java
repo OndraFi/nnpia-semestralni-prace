@@ -21,4 +21,5 @@ public class ReservationResponseDto {
     private String reservationName;
     private long numberOfPeople;
     private Boolean isAccepted;
+    private DeskResponseDto desk;
 }

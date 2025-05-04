@@ -1,5 +1,6 @@
 package cz.upce.fei.nnpia.controller;
 
+import com.mailjet.client.errors.MailjetException;
 import cz.upce.fei.nnpia.domain.Desk;
 import cz.upce.fei.nnpia.domain.User;
 import cz.upce.fei.nnpia.dto.DeskRequestDto;
@@ -12,6 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 @RestController
 @Slf4j
 @Validated
@@ -22,6 +25,11 @@ public class DeskController {
 
     public DeskController(DeskService deskService) {
         this.deskService = deskService;
+    }
+
+    @GetMapping("")
+    public ResponseEntity<Collection<DeskResponseDto>> findAllDesks(@PathVariable @Min(1) long restaurant_id) {
+        return ResponseEntity.ok(deskService.findAllDesks(restaurant_id).stream().map(Desk::toDeskResponseDto).toList());
     }
 
     @GetMapping("/{desk_id}")
@@ -42,7 +50,7 @@ public class DeskController {
     }
 
     @DeleteMapping("/{desk_id}")
-    public ResponseEntity<?> deleteDesk(@PathVariable @Min(1) long restaurant_id, @PathVariable @Min(1) long desk_id) {
+    public ResponseEntity<?> deleteDesk(@PathVariable @Min(1) long restaurant_id, @PathVariable @Min(1) long desk_id) throws MailjetException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         deskService.deleteDesk(restaurant_id, desk_id,user);
         return ResponseEntity.noContent().build();

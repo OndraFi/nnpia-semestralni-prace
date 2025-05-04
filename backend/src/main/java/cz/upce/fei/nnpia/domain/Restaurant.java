@@ -27,6 +27,9 @@ public class Restaurant {
     private String name;
 
     @NonNull
+    private Boolean usesDesks;
+
+    @NonNull
     private int capacity;
     @NonNull
     private LocalTime openTime;
@@ -61,7 +64,7 @@ public class Restaurant {
 
          imageUUIDs = images.stream().map(RestaurantImage::getUuid).toList();
         }
-        return new RestaurantResponseDto(id, name,capacity, openTime,closeTime, addressDto, imageUUIDs);
+        return new RestaurantResponseDto(id, name,capacity, openTime,closeTime, addressDto, imageUUIDs, usesDesks);
     }
 
     @Override

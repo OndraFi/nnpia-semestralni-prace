@@ -45,6 +45,12 @@ public class ReservationController {
         return ResponseEntity.ok().body(availableTimes);
     }
 
+    @GetMapping("/available-times/{deskId}")
+    public ResponseEntity<List<TimeRange>> getAvailableTimes(@PathVariable @Min(1) long restaurantId, @PathVariable @Min(1) long deskId, @RequestParam LocalDate date) {
+        List<TimeRange> availableTimes = reservationService.getAvailableTimeBlocksForDesk(restaurantId, deskId, date);
+        return ResponseEntity.ok().body(availableTimes);
+    }
+
     @GetMapping
     public ResponseEntity<List<ReservationResponseDto>> getReservations(@PathVariable @Min(1) long restaurantId) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

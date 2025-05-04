@@ -1,5 +1,6 @@
 package cz.upce.fei.nnpia.domain;
 
+import cz.upce.fei.nnpia.dto.DeskResponseDto;
 import cz.upce.fei.nnpia.dto.ReservationResponseDto;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name="app_reservation")
+@Table(name = "app_reservation")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -61,7 +62,11 @@ public class Reservation {
                 '}';
     }
 
-    public ReservationResponseDto toDto(){
-        return new ReservationResponseDto(id,uuid,startTime,endTime,phone,email,reservationName,numberOfPeople,isAccepted);
+    public ReservationResponseDto toDto() {
+        DeskResponseDto deskResponseDto = null;
+        if (desk != null){
+            deskResponseDto = this.desk.toDeskResponseDto();
+        }
+        return new ReservationResponseDto(id, uuid, startTime, endTime, phone, email, reservationName, numberOfPeople, isAccepted, deskResponseDto);
     }
 }

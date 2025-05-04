@@ -49,7 +49,7 @@ class ReservationServiceTest {
         LocalDate date = LocalDate.of(2025, 4, 10);
         int numberOfPeople = 4;
 
-        Restaurant restaurant = new Restaurant("Test", 10,
+        Restaurant restaurant = new Restaurant("Test",false, 10,
                 LocalTime.of(8, 0), LocalTime.of(12, 0), new User());
 
         when(restaurantService.findRestaurant(restaurantId)).thenReturn(restaurant);
@@ -90,7 +90,7 @@ class ReservationServiceTest {
         LocalDateTime now = LocalDateTime.now().plusHours(2);
         LocalDateTime later = now.plusHours(1);
 
-        Restaurant restaurant = new Restaurant("Test", 10,
+        Restaurant restaurant = new Restaurant("Test", false, 10,
                 LocalTime.of(8, 0), LocalTime.of(20, 0), new User());
 
         Reservation existingRes = new Reservation(
@@ -104,7 +104,8 @@ class ReservationServiceTest {
                 "333222111",
                 "new@test.cz",
                 "Eva",
-                4
+                4,
+                null
         );
 
         when(restaurantService.findRestaurant(restaurantId)).thenReturn(restaurant);
