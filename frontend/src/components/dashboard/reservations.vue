@@ -1,7 +1,46 @@
 <template>
   <div>
-    <span class="h3">Rezervace</span>
-    <span v-if="reservations" class="text-muted small"> ({{ reservations.length }})</span>
+    <div class="row">
+      <div class="col-md-7">
+
+        <span class="h3">Rezervace</span>
+        <span v-if="reservations" class="text-muted small"> ({{ reservations.length }})</span>
+      </div>
+      <div class="col-md-1">
+        <div class="form-check">
+          <input class="form-check-input"
+                 type="checkbox"
+                 v-model="searchAccepted"
+                 id="searchAccepted"
+                 @change="searchAcceptedReservations">
+          <label class="form-check-label" for="searchAccepted">
+            schválené
+          </label>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <div class="form-check">
+          <input class="form-check-input"
+                 type="checkbox"
+                 v-model="searchNotAccepted"
+                 id="searchNotAccepted"
+                 @change="searchNotAcceptedReservations">
+          <label class="form-check-label" for="searchNotAccepted">
+            nové
+          </label>
+        </div>
+
+      </div>
+      <div class="col-md-3">
+        <input type="text"
+               id="searchName"
+               class="form-control"
+               placeholder="Rezervace pro"
+               v-model="searchName"
+               @input="searchNameInReservations">
+      </div>
+    </div>
+
     <div v-if="reservations" v-for="reservation in reservations"
          class="card my-3 border-bottom border-0">
       <div class="card-body row align-items-center">
@@ -75,26 +114,41 @@ import {
   type Reservation
 } from "@/api/reservation.ts";
 import type {Restaurant} from "@/api/restaurant.ts";
+import {debounce} from "lodash";
 
 export default {
-  props:{
+  props: {
     restaurant: {
       type: Object as () => Restaurant,
       required: true
     }
   },
-  data(){
+  data() {
     return {
       reservations: null as Array<Reservation> | null,
-
+      searchName: "",
+      searchAccepted: false as boolean,
+      searchNotAccepted: false as boolean,
     }
   },
-  methods:{
+  methods: {
+    searchAcceptedReservations() {
+      this.searchNotAccepted = false;
+      this.findReservations();
+    },
+    searchNotAcceptedReservations() {
+      this.searchAccepted = false;
+      this.findReservations();
+    },
+    searchNameInReservations: debounce(function () {
+      this.findReservations();
+    }, 500),
     async findReservations() {
       if (this.restaurant) {
-        getReservationsByRestaurantId(this.restaurant.id).then(response => {
+        this.reservations = null;
+        getReservationsByRestaurantId(this.restaurant.id, this.searchName, this.searchAccepted, this.searchNotAccepted).then(response => {
           this.reservations = response;
-          console.log("reservations",response);
+          console.log("reservations", response);
         }).catch(e => {
           console.log(e);
         })

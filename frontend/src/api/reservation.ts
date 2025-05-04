@@ -50,8 +50,26 @@ export const createReservation = (restaurantId: number, reservationRequest: Rese
   })
 }
 
-export const getReservationsByRestaurantId = (restaurantId: number) : Promise<Array<Reservation>> => {
-  return axiosInstance.get(baseUrl + `/${restaurantId}/reservations`).then(response=>{
+export const getReservationsByRestaurantId = (restaurantId: number, searchName: string, searchAccepted: boolean, searchNotAccepted: boolean) : Promise<Array<Reservation>> => {
+  let url = baseUrl + `/${restaurantId}/reservations`;
+  if(searchName)
+    url += `?name=${searchName}`;
+  if(searchAccepted){
+    if(url.includes("?")){
+      url += `&accepted=true`;
+    }else{
+      url += `?accepted=true`;
+    }
+  }
+  if(searchNotAccepted){
+    if(url.includes("?")){
+      url += `&accepted=false`;
+    }else{
+      url += `?accepted=false`;
+    }  }
+
+  console.log(url);
+  return axiosInstance.get(url).then(response=>{
     return response.data;
   })
 }

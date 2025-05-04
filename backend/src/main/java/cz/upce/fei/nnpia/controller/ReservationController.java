@@ -52,9 +52,9 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationResponseDto>> getReservations(@PathVariable @Min(1) long restaurantId) {
+    public ResponseEntity<List<ReservationResponseDto>> getReservations(@PathVariable @Min(1) long restaurantId, @RequestParam(required = false) Boolean accepted, @RequestParam(required = false) String name) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Reservation> reservations = reservationService.getReservations(restaurantId, user);
+        List<Reservation> reservations = reservationService.getReservations(restaurantId, user, accepted,name);
         return ResponseEntity.ok().body(reservations.stream().map(Reservation::toDto).toList());
     }
 

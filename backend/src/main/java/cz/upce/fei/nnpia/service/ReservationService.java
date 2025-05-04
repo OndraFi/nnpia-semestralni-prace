@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -177,13 +178,23 @@ public class ReservationService {
         return availableRanges;
     }
 
-    public List<Reservation> getReservations(@Min(1) long restaurantId, User user) {
+    public List<Reservation> getReservations(@Min(1) long restaurantId, User user, Boolean accepted, String name) {
         Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
         if (restaurant.getUser().getId() != user.getId()) {
             throw new OwnershipException("You are not the owner of this restaurant");
         }
         List<Reservation> reservations = reservationRepository.findAllByRestaurantId(restaurantId);
-        reservations.sort((r1, r2) -> r1.getStartTime().compareTo(r2.getStartTime()));
+        reservations.sort(Comparator.comparing(Reservation::getStartTime));
+        if (accepted != null) {
+            reservations = reservations.stream()
+                    .filter(reservation -> reservation.getIsAccepted().equals(accepted))
+                    .toList();
+        }
+        if (name != null) {
+            reservations = reservations.stream()
+                    .filter(reservation -> reservation.getReservationName().toLowerCase().contains(name.toLowerCase()))
+                    .toList();
+        }
         return reservations;
     }
 
