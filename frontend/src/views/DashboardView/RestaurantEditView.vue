@@ -2,6 +2,69 @@
   <Default>
 
     <div class="container-md">
+      <span class="h3">Rezervace</span>
+      <div v-if="reservations" v-for="reservation in reservations" class="card my-3 shadow">
+        <div class="card-body row align-items-center">
+          <!-- Stav rezervace jako ikona a badge -->
+          <div class="col-md-2 text-center">
+            <i
+              v-if="reservation.isAccepted"
+              class="bi bi-check-circle-fill text-success fs-3"
+              title="Schváleno"></i>
+            <i
+              v-else
+              class="bi bi-clock-fill text-primary fs-3"
+              title="Nová"></i>
+          </div>
+
+          <!-- Základní info o rezervaci -->
+          <div class="col-md-7">
+            <h5 class="card-title mb-1">
+              Rezervace na jméno <strong>{{ reservation.reservationName }}</strong>
+            </h5>
+            <p class="mb-1">
+              Datum: {{ new Date(reservation.startTime).toLocaleDateString() }}<br>
+              Čas: {{ new Date(reservation.startTime).toLocaleTimeString() }} – {{ new Date(reservation.endTime).toLocaleTimeString() }}
+            </p>
+            <p class="mb-1">
+              Počet osob:
+              {{ reservation.numberOfPeople }}
+              <span v-if="reservation.numberOfPeople === 1">osoba</span>
+              <span v-else-if="reservation.numberOfPeople < 5">osoby</span>
+              <span v-else>osob</span>
+            </p>
+          </div>
+
+          <!-- Kontaktní informace -->
+          <div class="col-md-3">
+            <p class="mb-1"><i class="bi bi-telephone-fill"></i> {{ reservation.phone }}</p>
+            <p class="mb-2"><i class="bi bi-envelope-fill"></i> {{ reservation.email }}</p>
+
+            <div class="d-flex gap-2">
+              <button
+                v-if="!reservation.isAccepted"
+                class="btn btn-sm btn-outline-success"
+                @click="doAcceptReservation(reservation)">
+                <i class="bi bi-check-circle"></i> Potvrdit
+              </button>
+              <button
+                class="btn btn-sm btn-outline-danger"
+                @click="doCancelReservation(reservation)">
+                <i class="bi bi-x-circle"></i> Zrušit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="reservations && reservations.length == 0"
+           class="text-center p-3 fw-bold shadow bg-light mt-3">
+        <img src="../../assets/img/warning.svg"
+             alt="no restaurant found"
+             style="height: 50px">
+        Nemáte žádné rezervace!
+      </div>
+
+      <hr>
       <span class="h3">Základní nastavení</span>
       <form v-if="restaurant" @submit.prevent="updateRestaurant">
         <div class="form-floating mt-3">
@@ -131,18 +194,36 @@
       <span
         class="small text-muted">První obrázek bude použit jako náhledový v seznamu restaurací</span>
       <form @submit.prevent="uploadImage">
-        <input type="file" @change="onFileChange">
-        <input type="submit" value="Přidat obrázek">
+        <input type="file" class="form-control" @change="onFileChange">
+        <input type="submit"
+               class="btn btn-primary w-100 mt-3"
+               value="Přidat obrázek">
       </form>
-      <div v-if="restaurant && restaurant.imagesIds.length > 0">
-        <img
+      <div v-if="restaurant && restaurant.imagesIds.length > 0" class="d-flex flex-wrap justify-content-start">
+        <div
           v-for="image in restaurant.imagesIds"
           :key="image"
-          :src="getRestaurantImageUrl(image)"
-          alt="restaurant image"
-          style="max-width: 200px; margin: 0.5rem;"
-        />
+          class="card shadow-sm m-2 border-0"
+          style="width: 200px;"
+        >
+          <img
+            :src="getRestaurantImageUrl(image)"
+            alt="restaurant image"
+            class="card-img-top rounded"
+            style="height: 150px; object-fit: cover;"
+          />
+          <div class="card-body text-center p-2">
+            <button
+              class="btn btn-sm btn-outline-danger"
+              @click="deleteImage(image)"
+              title="Smazat obrázek"
+            >
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+        </div>
       </div>
+
 
       <hr>
       <span class="h-3">Widget</span>
@@ -153,53 +234,6 @@
         </router-link>
       </div>
 
-      <!--      REZERVACE-->
-      <hr>
-      <span class="h3">Rezervace</span>
-      <div v-if="reservations" class="row shadow my-3" v-for="reservation in reservations">
-        <p class="position-relative">
-          <span
-            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
-            v-if="!reservation.isAccepted">Nová</span>
-          <span
-            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-success"
-            v-else>Schválená</span>
-        </p>
-        id: {{ reservation.id }}
-        <br>
-        uuid: {{ reservation.uuid }}
-        <br>
-        <b>začátek rezervace:</b> {{ reservation.startTime }}
-        <br>
-        konec rezervacec: {{ reservation.endTime }}
-        <br>
-        počet osob: {{ reservation.numberOfPeople }}
-        <br>
-        na jméno: {{ reservation.reservationName }}
-        <br>
-        telefon: {{ reservation.phone }}
-        <br>
-        email: {{ reservation.email }}
-        <br>
-        <button
-          v-if="!reservation.isAccepted"
-          class="btn btn-primary"
-          @click="doAcceptReservation(reservation)">
-          Potvrdit rezervaci
-        </button>
-        <button
-          class="btn btn-danger"
-          @click="doCancelReservation(reservation)">
-          Zrušit rezervaci
-        </button>
-      </div>
-      <div v-if="reservations && reservations.length == 0"
-           class="text-center p-3 fw-bold shadow bg-light mt-3">
-        <img src="../../assets/img/warning.svg"
-             alt="no restaurant found"
-             style="height: 50px">
-        Nemáte žádné rezervace!
-      </div>
     </div>
   </Default>
 </template>
@@ -214,6 +248,7 @@ import {
   updateAddress
 } from "@/api/address.ts"
 import {
+  deleteRestaurantImage,
   getRestaurantImageUrl,
   uploadRestaurantImage
 } from "@/api/restaurantImage.ts";
@@ -241,6 +276,7 @@ export default {
     }
   },
   methods: {
+    deleteRestaurantImage,
     acceptReservation,
     getRestaurantImageUrl,
     async findRestaurant() {
@@ -268,17 +304,6 @@ export default {
           })
           console.log(e)
         })
-    },
-    async findRestaurantAddress() {
-      console.log("finding restaurant address");
-      if (this.restaurant) {
-        await findAddress(this.restaurant.id).then(address => {
-          console.log(address);
-          this.restaurant.address = address;
-        }).catch(e => {
-          console.log(e);
-        })
-      }
     },
     async createRestaurantAddress() {
       await createAddress(this.restaurant.id, this.addressCreateRequest).then(address => {
@@ -325,7 +350,8 @@ export default {
             type: 'success',
             text: 'Obrázek přidán.'
           })
-        }).catch(e=>{
+          this.findRestaurant();
+        }).catch(e => {
           this.$notify({
             type: 'error',
             text: 'Nepovedlo se přidat obrázek.'
@@ -333,6 +359,21 @@ export default {
         })
         this.file = null;
       }
+    },
+    async deleteImage(uuid: string){
+      await deleteRestaurantImage(uuid).then(response=>{
+        this.$notify({
+          type: 'success',
+          text: 'Obrázek odstraněn.'
+        })
+        this.findRestaurant();
+      }).catch(e => {
+        this.$notify({
+          type: 'error',
+          text: 'Nepovedlo se odstranit obrázek.'
+        })
+        console.log(e);
+      })
     },
     async findReservations() {
       if (this.restaurant) {

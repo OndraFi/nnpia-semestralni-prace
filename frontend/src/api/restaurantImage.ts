@@ -8,8 +8,9 @@ export const uploadRestaurantImage = async (restaurantId : number, file: FormDat
 }
 
 export const getRestaurantImageUrl = (uuid: string) => {
-  // axios.get(`${baseUrl}/${uuid}`).then(response=>{
-  //   return response.data;
-  // })
   return `${baseUrl}/${uuid}`;
+}
+
+export const deleteRestaurantImage = async (uuid: string) => {
+  return axiosInstance.delete(`${baseUrl}/${uuid}`)
 }

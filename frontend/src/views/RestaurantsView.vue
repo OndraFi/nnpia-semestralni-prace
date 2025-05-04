@@ -1,6 +1,6 @@
 <template>
   <Default>
-    <h1 class="text-center mt-5">Restaurace</h1>
+    <h1 class="text-center mt-5 display-4">Restaurace</h1>
     <img src="../assets/img/deviders/devider-2.svg" class="mt-5" alt="devider">
 
     <div class="bg-light pb-3 pt-5">

@@ -1,6 +1,6 @@
 <template>
   <Default>
-    <h1 v-if="restaurant" class="text-center mt-5">{{restaurant.name}}</h1>
+    <h1 v-if="restaurant" class="text-center mt-5 display-4">{{restaurant.name}}</h1>
     <img src="../assets/img/deviders/devider-2.svg" alt="devider">
 
     <div class="bg-light pb-3 pt-5">

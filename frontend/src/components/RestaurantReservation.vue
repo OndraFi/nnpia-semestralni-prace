@@ -68,7 +68,13 @@
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      <input type="submit" class="btn btn-primary w-100" :disabled="selectedTime === null" value="REZERVOVAT!">
+
+      <input v-if="!sending" type="submit" class="btn btn-primary w-100" :disabled="selectedTime === null" value="REZERVOVAT!">
+      <div v-else class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
     </form>
     <div v-else class="p-3 shadow">
       <h2>Vašer rezervace na jméno <b>{{reservation.reservationName}}</b> čeká na potvrzení!</h2>
@@ -100,6 +106,7 @@ export default {
       restaurant: null as Restaurant | null,
       selectedTime: null as ReservationTimeRange | null,
       reservation: null as Reservation | null,
+      sending: false,
     }
   },
   methods: {
@@ -127,7 +134,8 @@ export default {
       this.selectedTime = selectedTime;
     },
     sendReservation() {
-      if (this.restaurant && this.selectedTime) {
+      if (this.restaurant && this.selectedTime && !this.sending) {
+        this.sending = true;
         const reservationRequest: ReservationRequest = {
           startTime: this.reservationDate + "T" + this.selectedTime.start,
           endTime: this.reservationDate + "T" + this.selectedTime.end,
@@ -139,7 +147,9 @@ export default {
         createReservation(this.restaurant.id, reservationRequest).then(reservation => {
           this.reservation = reservation;
           console.log(reservation);
+          this.sending = false;
         }).catch(e => {
+          this.sending = false;
           console.log(e);
         })
       }

@@ -9,6 +9,8 @@
              :style="`background-image: url(${getRestaurantImageUrl(restaurant.imagesIds[0])})`">
 
         </div>
+        <img v-else src="../assets/img/breakfast.svg" alt="restaurant image" class="img-fluid">
+
       </div>
       <div class="col-md-8 ps-4 py-4">
 <!--        <router-link :to="`/dashboard/restaurant/${restaurant.id}`" v-if="dashboard">-->
