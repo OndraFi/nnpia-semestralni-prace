@@ -11,7 +11,7 @@
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <router-link class="nav-link" :class="{'active' : route('/')}" aria-current="page"
-                         to="/">Home
+                         to="/">Domů
             </router-link>
           </li>
           <li class="nav-item">
@@ -47,7 +47,7 @@
   <footer class="py-3 my-4">
     <ul class="nav justify-content-center border-bottom pb-3 mb-3">
       <li class="nav-item">
-        <router-link class="nav-link px-2 text-body-secondary" to="/">Home</router-link>
+        <router-link class="nav-link px-2 text-body-secondary" to="/">Domů</router-link>
       </li>
       <li class="nav-item">
         <router-link class="nav-link px-2 text-body-secondary" to="/restaurants">Restaurace</router-link>

@@ -27,7 +27,7 @@ import Default from "@/layouts/Default.vue";
         </div>
       </div>
     </div>
-    <div class="bg-light">
+    <div class="bg-light pb-5">
       <img src="../assets/img/deviders/devider-2.svg" alt="devider">
       <div class="container-md">
         <div class="row g-4 pb-5">

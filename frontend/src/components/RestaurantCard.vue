@@ -1,6 +1,6 @@
 <template>
   <div v-for="restaurant in restaurants"
-       class="my-4 shadow restaurant-card border-4">
+       class="my-4 shadow-sm restaurant-card border-4">
     <router-link class="row text-decoration-none text-black"
                :to="dashboard ? `/dashboard/restaurant/${restaurant.id}` :`/restaurant/${restaurant.id}`">
       <div class="col-md-4">

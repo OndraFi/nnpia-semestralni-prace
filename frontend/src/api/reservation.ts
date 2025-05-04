@@ -1,5 +1,6 @@
 import axiosInstance from "@/api/AuthenticatedAxiosInstance.ts";
 import type {Address} from "@/api/address.ts";
+import type {Desk} from "@/api/desk.ts";
 
 const baseUrl = import.meta.env.VITE_API_URL + "/restaurants";
 
@@ -13,6 +14,7 @@ export interface Reservation {
   reservationName : string;
   numberOfPeople : number;
   isAccepted: boolean;
+  desk: Desk | null;
 }
 
 export interface ReservationRequest {
@@ -22,6 +24,7 @@ export interface ReservationRequest {
   email: string;
   reservationName: string;
   numberOfPeople: number;
+  desk: Desk | null;
 }
 
 export interface ReservationTimeRange {
@@ -31,6 +34,12 @@ export interface ReservationTimeRange {
 
 export const getAvailableTimes = (restaurantId: number, date: string, numberOfPeople: number): Promise<Array<ReservationTimeRange>> => {
   return axiosInstance.get(baseUrl + `/${restaurantId}/reservations/available-times?date=${date}&numberOfPeople=${numberOfPeople}`).then(response => {
+    return response.data;
+  })
+}
+
+export const getAvailableTimesForDesk = (restaurantId: number, date: string, deskId: number): Promise<Array<ReservationTimeRange>> => {
+  return axiosInstance.get(baseUrl + `/${restaurantId}/reservations/available-times/${deskId}?date=${date}`).then(response => {
     return response.data;
   })
 }

@@ -83,6 +83,7 @@ export default {
       if (this.restaurantName.length > 3 && this.capacity > 0){
         const restaurant : RestaurantRequest = {
           name: this.restaurantName,
+          usesDesks: false,
           capacity: this.capacity,
           openTime: this.openTime,
           closeTime: this.closeTime

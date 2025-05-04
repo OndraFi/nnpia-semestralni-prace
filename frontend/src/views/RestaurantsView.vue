@@ -4,7 +4,8 @@
     <img src="../assets/img/deviders/devider-2.svg" class="mt-5" alt="devider">
 
     <div class="bg-light pb-3 pt-5">
-      <div class="mb-5 container-md bg-white p-5 rounded shadow-sm">
+      <div class="mb-5 container-md bg-white p-5 rounded shadow-sm"
+           style="margin-top: -170px; position: relative; z-index: 10;">
         <div class="d-flex">
           <div class="form-floating">
             <input type="text" class="form-control" id="search" v-model="searchSlug" @input="search"

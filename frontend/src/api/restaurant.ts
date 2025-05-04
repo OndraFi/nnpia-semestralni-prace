@@ -5,6 +5,7 @@ const baseUrl = import.meta.env.VITE_API_URL + "/restaurants";
 
 export interface RestaurantRequest {
   name: string;
+  usesDesks: boolean;
   capacity: number;
   openTime: string;
   closeTime: string;
@@ -13,6 +14,7 @@ export interface RestaurantRequest {
 export interface Restaurant {
   id: number;
   name: string;
+  usesDesks: boolean;
   capacity: number;
   openTime: string;
   closeTime: string;
@@ -28,6 +30,7 @@ export interface RestaurantsPaginated {
 const restaurantToRequest = (restaurant: Restaurant) : RestaurantRequest => {
     return {
       name: restaurant.name,
+      usesDesks: restaurant.usesDesks,
       capacity: restaurant.capacity,
       openTime: restaurant.openTime,
       closeTime: restaurant.closeTime
