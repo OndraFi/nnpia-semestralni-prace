@@ -46,7 +46,7 @@ class ReservationServiceTest {
     void shouldReturnAvailableTimeBlocksRespectingCapacity() {
         // Arrange
         long restaurantId = 1L;
-        LocalDate date = LocalDate.of(2025, 4, 10);
+        LocalDate date = LocalDate.of(2025, 5, 10);
         int numberOfPeople = 4;
 
         Restaurant restaurant = new Restaurant("Test",false, 10,
@@ -56,8 +56,8 @@ class ReservationServiceTest {
 
         // Existující rezervace od 9:00 do 10:00 pro 6 lidí
         Reservation res1 = new Reservation(
-                LocalDateTime.of(2025, 4, 10, 9, 0),
-                LocalDateTime.of(2025, 4, 10, 10, 0),
+                LocalDateTime.of(2025, 5, 10, 9, 0),
+                LocalDateTime.of(2025, 5, 10, 10, 0),
                 "646778888", "mail@test.cz", "Jirka", 10, restaurant
         );
 

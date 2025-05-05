@@ -53,6 +53,7 @@ class RestaurantIntegrationTest {
     void shouldCreateRestaurantAndAddAddress() {
         Restaurant restaurant = new Restaurant(
                 "U Tygra",
+                false,
                 30,
                 LocalTime.of(9, 0),
                 LocalTime.of(22, 0),
