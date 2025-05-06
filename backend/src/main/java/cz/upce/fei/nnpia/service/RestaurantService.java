@@ -76,4 +76,9 @@ public class RestaurantService {
             return restaurantRepository.count();
         }
     }
+
+    public void removeRestaurantAddress(Restaurant restaurant){
+        restaurant.setAddress(null);
+        restaurantRepository.save(restaurant);
+    }
 }

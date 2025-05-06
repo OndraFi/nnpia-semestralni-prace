@@ -8,7 +8,6 @@ import cz.upce.fei.nnpia.exception.BadRequestException;
 import cz.upce.fei.nnpia.exception.NotFoundException;
 import cz.upce.fei.nnpia.exception.OwnershipException;
 import cz.upce.fei.nnpia.repository.AddressRepository;
-import cz.upce.fei.nnpia.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,12 +15,10 @@ public class AddressService {
 
     private final AddressRepository addressRepository;
     private final RestaurantService restaurantService;
-    private final RestaurantRepository restaurantRepository;
 
-    public AddressService(AddressRepository addressRepository, RestaurantService restaurantService, RestaurantRepository restaurantRepository) {
+    public AddressService(AddressRepository addressRepository, RestaurantService restaurantService) {
         this.addressRepository = addressRepository;
         this.restaurantService = restaurantService;
-        this.restaurantRepository = restaurantRepository;
     }
 
     public Address createAddress(long restaurantId, AddressRequestDto addressRequestDto, User user) throws OwnershipException, BadRequestException {
@@ -52,8 +49,7 @@ public class AddressService {
     public void deleteAddress(long restaurantId, User user) throws NotFoundException {
         Restaurant restaurant = findRestaurant(restaurantId, user);
         Address existingAddress = findAddressByRestaurantId(restaurantId);
-        restaurant.setAddress(null);
-        restaurantRepository.save(restaurant);
+        restaurantService.removeRestaurantAddress(restaurant);
         addressRepository.delete(existingAddress);
     }
 

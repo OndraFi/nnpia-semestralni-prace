@@ -6,14 +6,10 @@ import cz.upce.fei.nnpia.domain.Reservation;
 import cz.upce.fei.nnpia.domain.Restaurant;
 import cz.upce.fei.nnpia.domain.User;
 import cz.upce.fei.nnpia.dto.DeskRequestDto;
-import cz.upce.fei.nnpia.dto.DeskResponseDto;
 import cz.upce.fei.nnpia.exception.NotFoundException;
 import cz.upce.fei.nnpia.exception.OwnershipException;
 import cz.upce.fei.nnpia.repository.DeskRepository;
-import cz.upce.fei.nnpia.repository.ReservationRepository;
-import cz.upce.fei.nnpia.repository.RestaurantRepository;
 import jakarta.validation.constraints.Min;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,17 +19,13 @@ import java.util.List;
 public class DeskService {
 
     private final DeskRepository deskRepository;
-    private final RestaurantRepository restaurantRepository;
     private final RestaurantService restaurantService;
     private final ReservationService reservationService;
-    private final ReservationRepository reservationRepository;
 
-    public DeskService(DeskRepository deskRepository, RestaurantRepository restaurantRepository, RestaurantService restaurantService, ReservationService reservationService, ReservationRepository reservationRepository) {
+    public DeskService(DeskRepository deskRepository, RestaurantService restaurantService, ReservationService reservationService) {
         this.deskRepository = deskRepository;
-        this.restaurantRepository = restaurantRepository;
         this.restaurantService = restaurantService;
         this.reservationService = reservationService;
-        this.reservationRepository = reservationRepository;
     }
 
     public Desk createDesk(long restaurantId, DeskRequestDto deskRequestDto, User user) {
@@ -64,7 +56,7 @@ public class DeskService {
         deskRepository.deleteById(id);
 
         // Get all reservations for the desk and delete them
-        List<Reservation> reservations = reservationRepository.findReservationsByDeskId(id);
+        List<Reservation> reservations = reservationService.findReservationsByDeskId(id);
         for (Reservation reservation : reservations) {
             reservationService.deleteReservation(restaurant.getId(),reservation.getUuid());
         }
@@ -76,7 +68,7 @@ public class DeskService {
     }
 
     public Collection<Desk> findAllDesks(@Min(1) long restaurantId) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new NotFoundException("Restaurant id:"+restaurantId+" not found"));
+        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
         return deskRepository.findByRestaurant(restaurant);
     }
 }

@@ -19,16 +19,16 @@ import java.util.UUID;
 public class RestaurantImageService {
 
 
-    private final RestaurantRepository restaurantRepository;
     private final RestaurantImageRepository restaurantImageRepository;
+    private final RestaurantService restaurantService;
 
-    public RestaurantImageService(RestaurantRepository restaurantRepository, RestaurantImageRepository restaurantImageRepository) {
-        this.restaurantRepository = restaurantRepository;
+    public RestaurantImageService(RestaurantImageRepository restaurantImageRepository, RestaurantService restaurantService) {
         this.restaurantImageRepository = restaurantImageRepository;
+        this.restaurantService = restaurantService;
     }
 
     public void uploadRestaurantImage(Long restaurantId, MultipartFile file, User user) throws IOException {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() -> new NotFoundException("Restaurant not found"));
+        Restaurant restaurant = restaurantService.findRestaurant(restaurantId);
 
         if (restaurant.getUser().getId() != user.getId()) {
             throw new OwnershipException("You are not the owner!");

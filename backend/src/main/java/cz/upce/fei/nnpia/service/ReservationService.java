@@ -225,4 +225,8 @@ public class ReservationService {
         mailJetService.sendReservationCancelEmail(reservation);
         reservationRepository.deleteByUuid(reservationUuid);
     }
+
+    public List<Reservation> findReservationsByDeskId(long deskId) {
+        return reservationRepository.findReservationsByDeskId(deskId);
+    }
 }
