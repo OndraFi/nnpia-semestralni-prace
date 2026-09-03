@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     findRestaurant() {
-      findRestaurantById(this.$route.params.id).then(restaurant => {
+      findRestaurantById(Number(this.$route.params.id)).then(restaurant => {
         this.restaurant = restaurant;
       })
     },

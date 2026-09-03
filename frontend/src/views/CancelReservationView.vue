@@ -15,8 +15,8 @@
       }
     },
     created() {
-      const restaurantId = this.$route.params.id
-      const reservationUuid = this.$route.params.uuid;
+      const restaurantId = Number(this.$route.params.id)
+      const reservationUuid = String(this.$route.params.uuid);
       cancelReservation(restaurantId,reservationUuid).then(response=>{
         console.log(response);
         this.message = "Vaše rezervace byla úspěšně zrušena."

@@ -32,6 +32,7 @@
   </div>
 </template>
 <script lang="ts">
+import type {PropType} from 'vue';
 import type {ReservationTimeRange} from "@/api/reservation.ts";
 
 export default {
@@ -42,6 +43,7 @@ export default {
     },
     restaurant: {
       required: true,
+      type: Object as PropType<any>
     },
     timeRange: {
       default: 15

@@ -148,7 +148,7 @@ export default {
       this.size = s;
       this.findRestaurants();
     },
-    search: debounce(function() {
+    search: debounce(function(this: any) {
       this.page = 0;
       this.findRestaurants();
     }, 500),

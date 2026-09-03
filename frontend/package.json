@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
+    "@types/aos": "^3.0.8",
+    "@types/lodash": "^4.17.25",
     "@types/node": "^22.13.9",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",

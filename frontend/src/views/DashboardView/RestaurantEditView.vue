@@ -99,7 +99,7 @@ export default {
     acceptReservation,
     getRestaurantImageUrl,
     async findRestaurant() {
-      await findRestaurantById(this.$route.params.id).then(response => {
+      await findRestaurantById(Number(this.$route.params.id)).then(response => {
         this.restaurant = response;
         console.log(response);
       }).catch(e => {
@@ -108,7 +108,7 @@ export default {
     },
     async findReservations() {
       if (this.restaurant) {
-        getReservationsByRestaurantId(this.restaurant.id).then(response => {
+        getReservationsByRestaurantId(this.restaurant.id, "", true, true).then(response => {
           this.reservations = response;
           console.log(response);
         }).catch(e => {

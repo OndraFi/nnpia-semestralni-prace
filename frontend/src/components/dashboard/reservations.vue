@@ -140,7 +140,7 @@ export default {
       this.searchAccepted = false;
       this.findReservations();
     },
-    searchNameInReservations: debounce(function () {
+    searchNameInReservations: debounce(function (this: any) {
       this.findReservations();
     }, 500),
     async findReservations() {

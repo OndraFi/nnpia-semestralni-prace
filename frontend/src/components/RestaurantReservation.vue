@@ -168,7 +168,7 @@ export default {
       this.getAvailableTimes();
     },
     async findRestaurant() {
-      await findRestaurantById(this.$route.params.id).then(restaurant => {
+      await findRestaurantById(Number(this.$route.params.id)).then(restaurant => {
         this.restaurant = restaurant;
       })
     },
@@ -176,12 +176,12 @@ export default {
       this.availableTimes = null;
       console.log(this.reservationDate);
       if (this.restaurant?.usesDesks && this.selectedDesk) {
-        await getAvailableTimesForDesk(this.$route.params.id, this.reservationDate, this.selectedDesk.id).then(response => {
+        await getAvailableTimesForDesk(Number(this.$route.params.id), this.reservationDate, this.selectedDesk.id).then(response => {
           console.log(response);
           this.availableTimes = response;
         })
       } else {
-        await getAvailableTimes(this.$route.params.id, this.reservationDate, this.numberOfPeople).then(response => {
+        await getAvailableTimes(Number(this.$route.params.id), this.reservationDate, this.numberOfPeople).then(response => {
           console.log(response);
           this.availableTimes = response;
         })
@@ -191,7 +191,7 @@ export default {
       this.availableTimes = null;
       this.search();
     },
-    search: debounce(function () {
+    search: debounce(function (this: any) {
       this.getAvailableTimes();
     }, 300),
     handleTimeSelected(selectedTime: ReservationTimeRange | null) {
