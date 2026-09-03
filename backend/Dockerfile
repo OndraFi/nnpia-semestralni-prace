@@ -6,6 +6,7 @@ COPY gradlew .
 COPY gradle/ gradle/
 COPY build.gradle settings.gradle ./
 # Stažení závislostí (optimalizace cache)
+RUN chmod +x ./gradlew
 RUN ./gradlew dependencies --no-daemon
 
 # Kopírování zdrojových kódů a sestavení
