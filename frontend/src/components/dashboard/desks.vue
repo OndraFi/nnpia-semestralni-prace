@@ -22,7 +22,8 @@
                placeholder="kapacita stolu">
         <label for="country">Kapacita stolu</label>
       </div>
-      <input type="submit" value="Přidat stůl" class="btn btn-primary w-100 mt-3">
+      <input v-if="!isLoading" type="submit" value="Přidat stůl" class="btn btn-primary w-100 mt-3">
+      <div v-else class="text-center mt-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
     </form>
     <div class="row mt-3">
       <div
@@ -79,12 +80,14 @@ export default {
       capacity: 1,
     }
     return{
+      isLoading: false,
       desks: null as Array<Desk> | null,
       deskRequest,
     }
   },
   methods:{
     async addDesk() {
+      this.isLoading = true;
       if (this.restaurant)
         createDesk(this.restaurant?.id, this.deskRequest).then((desk: Desk) => {
           this.$notify({
@@ -101,6 +104,8 @@ export default {
             text: 'Nepovedlo se přidat stůl.'
           })
           console.log(e);
+        }).finally(() => {
+          this.isLoading = false;
         })
     },
     async deleteDesk(desk: Desk) {

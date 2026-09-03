@@ -15,7 +15,8 @@
               <input type="password" id="password" class="form-control" placeholder="heslo" v-model="password">
               <label for="password">Heslo</label>
             </div>
-            <input class="btn btn-primary mt-3 w-100" type="submit" value="PŘIHLÁSIT">
+            <input v-if="!isLoading" class="btn btn-primary mt-3 w-100" type="submit" value="PŘIHLÁSIT">
+            <div v-else class="text-center mt-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
           </form>
           <div class="col-md-6 d-none d-md-block">
             <img src="../assets/img/login.svg"
@@ -37,6 +38,7 @@ export default {
   components: {Default},
   data(){
     return {
+      isLoading: false,
       email: '',
       password: '',
       authStore: useAuthStore(),
@@ -44,6 +46,7 @@ export default {
   },
   methods:{
     async submit(){
+      this.isLoading = true;
       this.authStore.loginUser(this.email, this.password).then(response=>{
         console.log(response);
         this.$notify({
@@ -57,6 +60,8 @@ export default {
           text: 'Přihášení se nezdařilo.'
         })
         console.log(e);
+      }).finally(() => {
+        this.isLoading = false;
       })
     }
   }

@@ -9,7 +9,7 @@
                aria-expanded="false"
                aria-controls="createRestaurantCollapse">Přidat restauraci</button>
       <div class="collapse" id="createRestaurantCollapse">
-        <form @click.prevent="submitCreateForm">
+        <form @submit.prevent="submitCreateForm">
           <div class="form-floating mt-3">
             <input type="text"
                    minlength="4"
@@ -48,7 +48,8 @@
                    v-model="closeTime">
             <label for="closeTime">Čas zavření</label>
           </div>
-          <input class="btn btn-primary w-100 mt-3" type="submit" value="Přidat">
+          <input v-if="!isLoading" class="btn btn-primary w-100 mt-3" type="submit" value="Přidat">
+<div v-else class="text-center mt-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
         </form>
       </div>
     <restaurant-card :restaurants="restaurants" :dashboard="true"/>
@@ -71,6 +72,7 @@ export default {
   data() {
     const restaurants : Restaurant[] = [];
     return {
+      isLoading: false,
       restaurantName: '',
       capacity: 0,
       openTime: '',
@@ -80,6 +82,8 @@ export default {
   },
   methods: {
     async submitCreateForm() {
+      this.isLoading = true;
+      try {
       if (this.restaurantName.length > 3 && this.capacity > 0){
         const restaurant : RestaurantRequest = {
           name: this.restaurantName,
@@ -108,6 +112,9 @@ export default {
         })
       } else
         console.log("Název restaurace musí mít alespoň 3 znaky.");
+      } finally {
+        this.isLoading = false;
+      }
     },
     findUserRestaurants() {
       findRestaurantsByUser().then(response => {

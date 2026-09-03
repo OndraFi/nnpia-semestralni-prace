@@ -15,7 +15,8 @@
               <input type="password" id="password" class="form-control" placeholder="heslo" v-model="password">
               <label for="password">Heslo</label>
             </div>
-            <input class="mt-3 btn btn-primary w-100" type="submit">
+            <input v-if="!isLoading" class="mt-3 btn btn-primary w-100" type="submit" value="Vytvořit účet">
+            <div v-else class="text-center mt-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
           </form>
           <div class="col-md-6 d-none d-md-block">
             <img src="../assets/img/sign-up.svg"
@@ -36,6 +37,7 @@ export default {
   components: {Default},
   data() {
     return {
+      isLoading: false,
       email: '',
       password: '',
       authStore: useAuthStore()
@@ -43,6 +45,7 @@ export default {
   },
   methods: {
     async submit() {
+      this.isLoading = true;
       this.authStore.signUpUser(this.email, this.password).then(response => {
         console.log(response);
         this.$notify({
@@ -56,6 +59,8 @@ export default {
           text: 'Účet se nepovedlo vytvořit.'
         })
         console.log(e);
+      }).finally(() => {
+        this.isLoading = false;
       })
     }
   }

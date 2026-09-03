@@ -193,6 +193,7 @@ export default {
       country: ""
     }
     return {
+      isLoading: false,
       file: null as File | null,
       addressCreateRequest,
     }
@@ -200,6 +201,7 @@ export default {
   methods: {
     getRestaurantImageUrl,
     async updateRestaurant() {
+      this.isLoading = true;
       console.log("updating");
       if (this.restaurant)
         await updateRestaurantById(this.restaurant).then(restaurant => {
@@ -219,6 +221,7 @@ export default {
         })
     },
     async createRestaurantAddress() {
+      this.isLoading = true;
       if (this.restaurant)
         await createAddress(this.restaurant.id, this.addressCreateRequest).then(address => {
           this.$emit('findRestaurant')
@@ -235,6 +238,7 @@ export default {
         })
     },
     async updateRestaurantAddress() {
+      this.isLoading = true;
       if (this.restaurant && this.restaurant.address)
         await updateAddress(this.restaurant.id, this.restaurant.address).then(address => {
           // this.restaurant.address = address;
@@ -259,6 +263,7 @@ export default {
       }
     },
     async uploadImage() {
+      this.isLoading = true;
       if (this.restaurant && this.file) {
         const formData = new FormData();
         formData.append('file', this.file);
