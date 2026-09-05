@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,"/api/v1/restaurants/{id}/reservations").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/restaurant-images/{uuid}").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/restaurants/{id}/desks").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/ping").permitAll()
+                        .requestMatchers("/api/v1/ping", "/api/v1/ping/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
