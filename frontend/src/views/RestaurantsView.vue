@@ -24,7 +24,29 @@
             </ul>
           </div>
         </div>
-        <restaurant-card :restaurants="restaurants"/>
+        <restaurant-card v-if="!loadingRestaurants" :restaurants="restaurants"/>
+        <!-- Skeleton loadery (placeholder) -->
+        <div v-if="loadingRestaurants">
+          <div v-for="i in size" :key="'skeleton-'+i" class="my-4 shadow-sm border-4" style="border-radius: 5px; border: 1px solid #e0e0e0;">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="placeholder-glow" style="width: 100%; height: 150px; border-radius: 5px 0 0 5px;">
+                  <div class="placeholder w-100 h-100 bg-secondary" style="border-radius: 5px 0 0 5px; opacity: 0.2;"></div>
+                </div>
+              </div>
+              <div class="col-md-8 ps-4 py-4">
+                <h4 class="mb-3 placeholder-glow">
+                  <span class="placeholder col-6"></span>
+                </h4>
+                <small class="text-muted placeholder-glow">
+                  <span class="placeholder col-4"></span>
+                  <span class="placeholder col-3 ms-1"></span>
+                  <span class="placeholder col-2 ms-1"></span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
         <div v-if="total  === 0 && !loadingRestaurants" class="text-center p-3 fw-bold shadow bg-light mt-3">
           <img src="../assets/img/warning.svg"
                alt="no restaurant found"
